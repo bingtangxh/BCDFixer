@@ -470,25 +470,29 @@ goto settingsMainMenu
 :changeColor
 if not exist "%AppData%\9826" mkdir "%AppData%\9826"
 cls
-echo 如果使用Windows 终端且设置了背景图片，那么建议使用黑白颜色。
+echo 如果使用Windows 终端且设置了背景图片，那么建议使用不带底色的配色。
 echo.
-echo 选择你要的颜色
-echo [1]粉底 [2]黄色 [3]绿色 [4]亮紫 [5]蓝绿 [6]蓝底
-echo [7]黑白 [8]绿底 [9]灰黑 [a]黄底 [b]紫底
+echo 选择你要的颜色，字母不区分大小写。
+echo.
+echo [1]默认 [2]亮白 [3]绿色 [4]紫色 [5]蓝绿 [6]黄色
+echo [7]蓝底 [8]绿底 [9]灰底 [A]黄底 [B]紫底 [C]粉底
+echo [0]返回
 echo.
 set /p co=选择：
-if "%co%"=="1" set co= & color df & echo color df>>"%AppData%\9826\color.bat"
-if "%co%"=="2" set co= & color 0e & echo color 0e>>"%AppData%\9826\color.bat"
-if "%co%"=="3" set co= & color 0a & echo color 0a>>"%AppData%\9826\color.bat"
-if "%co%"=="4" set co= & color 0d & echo color 0d>>"%AppData%\9826\color.bat"
-if "%co%"=="5" set co= & color 0b & echo color 0b>>"%AppData%\9826\color.bat"
-if "%co%"=="6" set co= & color 1f & echo color 1f>>"%AppData%\9826\color.bat"
-if "%co%"=="7" set co= & color 0f & echo color 0f>>"%AppData%\9826\color.bat"
-if "%co%"=="8" set co= & color 2f & echo color 2f>>"%AppData%\9826\color.bat"
-if "%co%"=="9" set co= & color 70 & echo color 70>>"%AppData%\9826\color.bat"
-if /i "%co%"=="a" set co= & color 6f & echo color 6f>>"%AppData%\9826\color.bat"
-if /i "%co%"=="b" set co= & color 5f & echo color 5f>>"%AppData%\9826\color.bat"
-if "%co%"=="" goto settingsMainMenu
+if "%co%"=="1" color 07 & echo color 07>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="2" color 0f & echo color 0f>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="3" color 0a & echo color 0a>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="4" color 0d & echo color 0d>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="5" color 0b & echo color 0b>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="6" color 0e & echo color 0e>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="7" color 1f & echo color 1f>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="8" color 2f & echo color 2f>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="9" color 70 & echo color 70>"%AppData%\9826\color.bat" & goto changeColor
+rem /i有两种用法，这里是为了不区分大小写
+if /i "%co%"=="A" color 6f & echo color 6f>"%AppData%\9826\color.bat" & goto changeColor
+if /i "%co%"=="B" color 5f & echo color 5f>"%AppData%\9826\color.bat" & goto changeColor
+if /i "%co%"=="C" color df & echo color df>"%AppData%\9826\color.bat" & goto changeColor
+if "%co%"=="0" goto settingsMainMenu
 echo.
 echo 你的输入有误，请重新输入。
 echo.
