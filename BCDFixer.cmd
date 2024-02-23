@@ -501,7 +501,7 @@ if "%co%"=="8" set co= & color 2f & echo color 2f>>"%AppData%\9826\color.bat"
 if "%co%"=="9" set co= & color 70 & echo color 70>>"%AppData%\9826\color.bat"
 if /i "%co%"=="a" set co= & color 6f & echo color 6f>>"%AppData%\9826\color.bat"
 if /i "%co%"=="b" set co= & color 5f & echo color 5f>>"%AppData%\9826\color.bat"
-if "%co%"=="" goto settingsMainMenu
+if "%co%"=="" pause & goto settingsMainMenu
 echo.
 echo 你的输入有误，请重新输入。
 echo.
