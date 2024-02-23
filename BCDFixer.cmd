@@ -4,24 +4,24 @@
 cls
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
 if not exist "%temp%\9826\BCDMast\items" mkdir "%temp%\9826\BCDMast\items"
-title BCDMaster 0.4
+title BCDFixer Ver. 0.4
 mode con cols=70 lines=30
-echo ÓÉ±ùÌÇxhÖÆ×÷
+echo ç”±å†°ç³–xhåˆ¶ä½œ
 echo.
 cls
 
 :selfCheck
 bcdedit>nul
 if not ERRORLEVEL 1 goto selfCheck2
-echo »ñÈ¡µ±Ç°BCDÄÚÈİ·¢Éú´íÎó£¬¿ÉÄÜÊÇÃ»ÓĞ¹ÜÀíÔ±Éí·İÔËĞĞ¡£
+echo è·å–å½“å‰BCDå†…å®¹å‘ç”Ÿé”™è¯¯ï¼Œå¯èƒ½æ˜¯æ²¡æœ‰ç®¡ç†å‘˜èº«ä»½è¿è¡Œã€‚
 echo.
-echo ±¾³ÌĞò½«³¢ÊÔÒÔ¹ÜÀíÔ±Éí·İÖØÆô¡£
+echo æœ¬ç¨‹åºå°†å°è¯•ä»¥ç®¡ç†å‘˜èº«ä»½é‡å¯ã€‚
 if not "%~1"=="" (
     echo.
-    echo ¼ì²âµ½argv[1]²»ÊÇ¿ÕµÄ£¬Òò´Ë²»Ò»¶¨ÄÜÍêÃÀµØ×ÔĞĞÌáÈ¨¡£
+    echo æ£€æµ‹åˆ°argv[1]ä¸æ˜¯ç©ºçš„ï¼Œå› æ­¤ä¸ä¸€å®šèƒ½å®Œç¾åœ°è‡ªè¡Œææƒã€‚
     echo argv[1]==%1
     echo.
-    echo Èç¹û½øÈëÖ÷²Ëµ¥ºó£¬·¢ÏÖÏÔÊ¾µÄBCDÂ·¾¶²»ÕıÈ·£¬ÄÇÃ´Çë×ÔĞĞÒÔ¹ÜÀíÔ±Éí·İÔËĞĞ¡£
+    echo å¦‚æœè¿›å…¥ä¸»èœå•åï¼Œå‘ç°æ˜¾ç¤ºçš„BCDè·¯å¾„ä¸æ­£ç¡®ï¼Œé‚£ä¹ˆè¯·è‡ªè¡Œä»¥ç®¡ç†å‘˜èº«ä»½è¿è¡Œã€‚
     pause
 )
 echo.
@@ -38,7 +38,7 @@ set parameters="%parameters:~1%"
 
 mshta vbscript:createobject("shell.application").shellexecute("%~s0",%parameters%,"","runas",1)(window.close) & exit
 cd /d %~dp0 
-rem ¿´µÄhttps://www.bilibili.com/read/cv20376190/
+rem çœ‹çš„https://www.bilibili.com/read/cv20376190/
 
 :st
 :selfCheck2
@@ -46,9 +46,9 @@ VERIFY OTHER 2>nul
 SETLOCAL ENABLEEXTENSIONS
 setlocal ENABLEDELAYEDEXPANSION
 IF ERRORLEVEL 1 (
-    echo Î´ÄÜÆôÓÃÃüÁîÀ©Õ¹ºÍÑÓ³Ù±äÁ¿´úÈë¡£
+    echo æœªèƒ½å¯ç”¨å‘½ä»¤æ‰©å±•å’Œå»¶è¿Ÿå˜é‡ä»£å…¥ã€‚
     echo.
-    echo ±¾³ÌĞò½«Á¢¼´ÍË³ö¡£
+    echo æœ¬ç¨‹åºå°†ç«‹å³é€€å‡ºã€‚
     echo.
     pause
     goto end
@@ -58,7 +58,7 @@ IF ERRORLEVEL 1 (
 if "%1"=="~1" goto defineBCDStore1
 if not "%~1"=="" (
     set store="%~1"
-    echo ÒÑ¼ì²âµ½µÚ1¸ö²ÎÊı£¬½«Ö±½Ó½øÈëÖ÷²Ëµ¥¡£
+    echo å·²æ£€æµ‹åˆ°ç¬¬1ä¸ªå‚æ•°ï¼Œå°†ç›´æ¥è¿›å…¥ä¸»èœå•ã€‚
     echo argv[1]==%1
     echo.
     pause
@@ -66,13 +66,13 @@ if not "%~1"=="" (
 )
 :defineBCDStore1
 cls
-echo ÇëÏÈÉèÖÃÄãÒªĞŞ¸ÄÄÄ¸öBCDÎÄ¼ş¡£
-echo Èç¹ûÎª¿Õ£¬ÄÇÃ´½«Ê¹ÓÃµ±Ç°ÏµÍ³BCD¡£
-echo Ã»ÓĞĞ´ĞÂ½¨BCDµÄ¹¦ÄÜ£¬ÇëÊÖ¶¯ÔËĞĞBCDBOOT¡£
+echo è¯·å…ˆè®¾ç½®ä½ è¦ä¿®æ”¹å“ªä¸ªBCDæ–‡ä»¶ã€‚
+echo å¦‚æœä¸ºç©ºï¼Œé‚£ä¹ˆå°†ä½¿ç”¨å½“å‰ç³»ç»ŸBCDã€‚
+echo æ²¡æœ‰å†™æ–°å»ºBCDçš„åŠŸèƒ½ï¼Œè¯·æ‰‹åŠ¨è¿è¡ŒBCDBOOTã€‚
 echo.
-echo ÎÂÜ°ÌáÊ¾£ºµ±ÄãÀ´µ½ÕâÀïÊ±ÒÑ¾­ÊÇ¹ÜÀíÔ±Éí·İ£¬Í¨³£²»ÄÜÍÏ×§ÎÄ¼ş¡£
+echo æ¸©é¦¨æç¤ºï¼šå½“ä½ æ¥åˆ°è¿™é‡Œæ—¶å·²ç»æ˜¯ç®¡ç†å‘˜èº«ä»½ï¼Œé€šå¸¸ä¸èƒ½æ‹–æ‹½æ–‡ä»¶ã€‚
 echo.
-echo ÔÚÏÂ·½ÊäÈëÂ·¾¶¡£ÎŞĞèÊÖ¶¯Ìí¼ÓË«ÒıºÅ¡£
+echo åœ¨ä¸‹æ–¹è¾“å…¥è·¯å¾„ã€‚æ— éœ€æ‰‹åŠ¨æ·»åŠ åŒå¼•å·ã€‚
 echo.
 set store=
 set /p "store=>"
@@ -82,7 +82,7 @@ if "%store%"=="" (
 ) else (
     if not exist "%store:/store =%" (
         echo.
-        echo ÄãÊäÈëµÄÎÄ¼ş%store%²»´æÔÚ£¬ÇëÖØĞÂÊäÈë¡£
+        echo ä½ è¾“å…¥çš„æ–‡ä»¶%store%ä¸å­˜åœ¨ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
         echo.
         pause
         goto defineBCDStore
@@ -99,8 +99,8 @@ goto convertItems
 
 :convertItems
 if %modified%==1 (
-    set currentItemGUID=Î´Ö¸¶¨
-    set currentItemDescription=Î´Ö¸¶¨
+    set currentItemGUID=æœªæŒ‡å®š
+    set currentItemDescription=æœªæŒ‡å®š
     set numSelected=-1
     set modified=0
 )
@@ -120,32 +120,32 @@ if %copied%==1 (
 goto %menu%
 
 :mainMenu
-set The operation completed successfully.=Ô­À´ÊÇÓÃÕâÖÖ·½Ê½À´½â¾öµÄÂğ£¿Ì«À÷º¦ÁË£¡
+set The operation completed successfully.=åŸæ¥æ˜¯ç”¨è¿™ç§æ–¹å¼æ¥è§£å†³çš„å—ï¼Ÿå¤ªå‰å®³äº†ï¼
 cls
-echo                     BCD MasterÖ÷²Ëµ¥
+echo                     BCD Fixerä¸»èœå•
 echo.
-if "%store%"=="" (echo µ±Ç°Ñ¡¶¨µÄ´æ´¢£º´ËÏµÍ³µÄBCD) else (echo µ±Ç°Ñ¡¶¨µÄ´æ´¢£º%store:/store =%)
-echo µ±Ç°Ñ¡¶¨µÄÆô¶¯ÏîÄ¿£º   %currentItemDescription%
-echo µ±Ç°Ñ¡¶¨µÄGUID£º       %currentItemGUID%    %numSelected%
+if "%store%"=="" (echo å½“å‰é€‰å®šçš„å­˜å‚¨ï¼šæ­¤ç³»ç»Ÿçš„BCD) else (echo å½“å‰é€‰å®šçš„å­˜å‚¨ï¼š%store:/store =%)
+echo å½“å‰é€‰å®šçš„å¯åŠ¨é¡¹ç›®ï¼š   %currentItemDescription%
+echo å½“å‰é€‰å®šçš„GUIDï¼š       %currentItemGUID%    %numSelected%
 for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
     if %%A==bootsequence (
-        if %%B==%currentItemGUID% echo ÏÂÒ»´ÎÆô¶¯½«ÏÈÆô¶¯´ËÏî¡£
+        if %%B==%currentItemGUID% echo ä¸‹ä¸€æ¬¡å¯åŠ¨å°†å…ˆå¯åŠ¨æ­¤é¡¹ã€‚
     )
 )
 echo.
-echo [1]        Ñ¡È¡Ò»¸öÆô¶¯ÏîÄ¿
-rem echo [2]        ĞÂ½¨Ò»¸öÆô¶¯ÏîÄ¿
-if not %numSelected%==-1 echo [3]        ¸´ÖÆµ±Ç°Æô¶¯ÏîÄ¿
-if not %numSelected%==-1 echo [4]        É¾³ıµ±Ç°Æô¶¯ÏîÄ¿
-if not %numSelected%==-1 echo [5]        ½«µ±Ç°Æô¶¯ÏîÄ¿ÉèÖÃÎªÄ¬ÈÏ
-if not %numSelected%==-1 echo [6]        ½«µ±Ç°Æô¶¯ÏîÄ¿ÉèÖÃÎªÏÂ´ÎµÚÒ»¸öÆô¶¯
+echo [1]        é€‰å–ä¸€ä¸ªå¯åŠ¨é¡¹ç›®
+rem echo [2]        æ–°å»ºä¸€ä¸ªå¯åŠ¨é¡¹ç›®
+if not %numSelected%==-1 echo [3]        å¤åˆ¶å½“å‰å¯åŠ¨é¡¹ç›®
+if not %numSelected%==-1 echo [4]        åˆ é™¤å½“å‰å¯åŠ¨é¡¹ç›®
+if not %numSelected%==-1 echo [5]        å°†å½“å‰å¯åŠ¨é¡¹ç›®è®¾ç½®ä¸ºé»˜è®¤
+if not %numSelected%==-1 echo [6]        å°†å½“å‰å¯åŠ¨é¡¹ç›®è®¾ç½®ä¸ºä¸‹æ¬¡ç¬¬ä¸€ä¸ªå¯åŠ¨
 echo ----------------------------------------
-echo [9]        ¸ü¸ÄBCDÈ«¾ÖÉè¶¨
-echo [244]      ÇĞ»»ÁíÒ»¸öBCDÎÄ¼ş
-echo [738]      ¸ü¸Ä±¾³ÌĞòÈ«¾ÖÉè¶¨
-echo [0]        ÍË³ö
+echo [9]        æ›´æ”¹BCDå…¨å±€è®¾å®š
+echo [244]      åˆ‡æ¢å¦ä¸€ä¸ªBCDæ–‡ä»¶
+echo [738]      æ›´æ”¹æœ¬ç¨‹åºå…¨å±€è®¾å®š
+echo [0]        é€€å‡º
 echo.
-echo ÊäÈëÄãÑ¡ÔñµÄ±àºÅ£¬È»ºó°´ÏÂEnter¡£
+echo è¾“å…¥ä½ é€‰æ‹©çš„ç¼–å·ï¼Œç„¶åæŒ‰ä¸‹Enterã€‚
 echo.
 set slt=
 set /p "slt=>"
@@ -161,7 +161,7 @@ if "%slt%"=="244" goto defineBCDStore1
 if "%slt%"=="738" goto settings
 if "%slt%"=="0" goto end
 echo.
-echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
 echo.
 pause
 goto mainMenu
@@ -170,20 +170,20 @@ goto mainMenu
 cls
 :scan0
 set num=-1
-echo µÚ0¸öÏîÄ¿µÄÃèÊöÍ¨³£ÊÇWindows Boot Manager£¬´æ´¢Ò»Ğ©È«¾ÖÉè¶¨¡£
+echo ç¬¬0ä¸ªé¡¹ç›®çš„æè¿°é€šå¸¸æ˜¯Windows Boot Managerï¼Œå­˜å‚¨ä¸€äº›å…¨å±€è®¾å®šã€‚
 echo.
 :scan1
 set /a num+=1
 if not exist "%temp%\9826\BCDMast\items\item%num%.txt" goto scan2
-rem ÔÚÕâ¸öÑ­»·µ±ÖĞ£¬µÚÒ»¸öÒªÏÔÊ¾µÄÊôĞÔÇ°¼ÓÉÏÏÔÊ¾Æô¶¯Ïî±àºÅ£¬×îºóÒ»¸öºó¼ÓÉÏÏÔÊ¾¿ÕĞĞ¡£
-rem ÕâÀïÖ»ÏÔÊ¾ÁËÁ½¸öÊôĞÔ¡£
+rem åœ¨è¿™ä¸ªå¾ªç¯å½“ä¸­ï¼Œç¬¬ä¸€ä¸ªè¦æ˜¾ç¤ºçš„å±æ€§å‰åŠ ä¸Šæ˜¾ç¤ºå¯åŠ¨é¡¹ç¼–å·ï¼Œæœ€åä¸€ä¸ªè¦æ˜¾ç¤ºçš„å±æ€§ååŠ ä¸Šæ˜¾ç¤ºç©ºè¡Œã€‚
+rem è¿™é‡Œåªæ˜¾ç¤ºäº†ä¸¤ä¸ªå±æ€§ã€‚
 for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%num%.txt") do (
-    if %%A==±êÊ¶·û (
-        echo Æô¶¯Ïî %num%
-        echo ±êÊ¶·û %%B
+    if %%A==æ ‡è¯†ç¬¦ (
+        echo å¯åŠ¨é¡¹ %num%
+        echo æ ‡è¯†ç¬¦ %%B
     )
     if %%A==description (
-        echo ÏîÄ¿ÃèÊö %%B %%C %%D %%E %%F %%G %%H %%I %%J
+        echo é¡¹ç›®æè¿° %%B %%C %%D %%E %%F %%G %%H %%I %%J
         echo.
     )
 )
@@ -191,16 +191,16 @@ goto scan1
 :scan2
 
 :inquireSelection
-echo ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÏîÄ¿ĞòºÅ£¬È»ºó°´Enter¡£
-echo ÒªĞŞ¸Äµ±Ç°²Ù×÷ÏµÍ³£¬ÇëÊäÈë{current}£¬°üÀ¨»¨£¨´ó£©À¨ºÅ¡£
+echo è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„é¡¹ç›®åºå·ï¼Œç„¶åæŒ‰Enterã€‚
+rem echo è¦ä¿®æ”¹å½“å‰æ“ä½œç³»ç»Ÿï¼Œè¯·è¾“å…¥{current}ï¼ŒåŒ…æ‹¬èŠ±ï¼ˆå¤§ï¼‰æ‹¬å·ã€‚
 echo.
 set /p "numSelected=>"
 :defineSelection
 if "%numSelected%"=="{current}" (
     if not "%store%"=="" (
         echo.
-        echo µ±Ç°Ñ¡¶¨µÄ´æ´¢²»ÊÇÏµÍ³Ä¬ÈÏ´æ´¢£¬ËùÒÔ²»´æÔÚËùÎ½µÄ{current}¡£
-        echo ÇëÖØĞÂÑ¡¶¨BCDÎÄ¼ş¡£
+        echo å½“å‰é€‰å®šçš„å­˜å‚¨ä¸æ˜¯ç³»ç»Ÿé»˜è®¤å­˜å‚¨ï¼Œæ‰€ä»¥ä¸å­˜åœ¨æ‰€è°“çš„{current}ã€‚
+        echo è¯·é‡æ–°é€‰å®šBCDæ–‡ä»¶ã€‚
         echo.
         pause
         goto defineBCDStore1
@@ -215,7 +215,7 @@ if "%numSelected%"=="{current}" (
 if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
     for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
         rem echo 1
-        if %%A==±êÊ¶·û (
+        if %%A==æ ‡è¯†ç¬¦ (
             set currentItemGUID=%%B
         )
         if %%A==description (
@@ -224,25 +224,26 @@ if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
     )
 ) else (
     echo.
-    echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+    echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
     echo.
     pause
     goto select
 )
+if "%numSelected%"=="{current}" echo. & echo è¯¥ç‰¹æ€§å°šæœªå®Œå·¥ï¼Œæ— æ³•ç¡®å®šæ¥ä¸‹æ¥çš„è¡Œä¸ºã€‚ & echo. & pause
 goto mainMenu
 
 :create
 echo.
-echo Ç°ÃæµÄÇøÓòÒÔºóÔÙÀ´Ì½Ë÷°É£¿
+echo å‰é¢çš„åŒºåŸŸä»¥åå†æ¥æ¢ç´¢å§ï¼Ÿ
 echo.
 pause
 goto mainMenu
 
 :copy
 cls
-echo ÇëÊäÈëĞÂÆô¶¯ÏîÄ¿µÄÃèÊö£¬ÎŞĞèÊäÈëË«ÒıºÅ¡£
-echo ÈçÁô¿ÕÔò²»¸´ÖÆ²¢·µ»Ø¡£
-echo ÊäÈëÍê±Ïºó°´Enter¡£
+echo è¯·è¾“å…¥æ–°å¯åŠ¨é¡¹ç›®çš„æè¿°ï¼Œæ— éœ€è¾“å…¥åŒå¼•å·ã€‚
+echo å¦‚ç•™ç©ºåˆ™ä¸å¤åˆ¶å¹¶è¿”å›ã€‚
+echo è¾“å…¥å®Œæ¯•åæŒ‰Enterã€‚
 echo.
 set slt=
 set /p "slt=>"
@@ -250,22 +251,22 @@ echo.
 if "%slt%"=="" goto mainMenu
 bcdedit %store% /copy %currentItemGUID% /d "%slt%"
 echo.
-echo ½«Ñ¡ÖĞĞÂ¸´ÖÆµÄÏîÄ¿¡£
+echo å°†é€‰ä¸­æ–°å¤åˆ¶çš„é¡¹ç›®ã€‚
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 set copied=1
 goto convertItems
 
 :delete
 cls
-echo ÌìÄÄ£¬ÎÒµÄÀÏ»ï¼Æ£¬ÄãÒªÉ¾³ı´ËÏîÄ¿Âğ£¿
-echo ÎÒÊÇËµ£¬ÄãÕæµÄÒªÉ¾³ı´ËÏîÄ¿Âğ£¿
+echo å¤©å“ªï¼Œæˆ‘çš„è€ä¼™è®¡ï¼Œä½ è¦åˆ é™¤æ­¤é¡¹ç›®å—ï¼Ÿ
+echo æˆ‘æ˜¯è¯´ï¼Œä½ çœŸçš„è¦åˆ é™¤æ­¤é¡¹ç›®å—ï¼Ÿ
 echo.
-echo µ±Ç°Ñ¡¶¨µÄÆô¶¯ÏîÄ¿£º   %currentItemDescription%
-echo µ±Ç°Ñ¡¶¨µÄGUID£º       %currentItemGUID%
+echo å½“å‰é€‰å®šçš„å¯åŠ¨é¡¹ç›®ï¼š   %currentItemDescription%
+echo å½“å‰é€‰å®šçš„GUIDï¼š       %currentItemGUID%
 echo.
-echo [1] ÊÇµÄ£¬ÎÒÊÇËµ£¬ÕæµÄ     [0] ÊÖ»¬ÁË£¬²»É¾³ı
+echo [1] æ˜¯çš„ï¼Œæˆ‘æ˜¯è¯´ï¼ŒçœŸçš„     [0] æ‰‹æ»‘äº†ï¼Œä¸åˆ é™¤
 echo.
 set slt=
 set /p "slt=>"
@@ -273,14 +274,14 @@ echo.
 if "%slt%"=="" goto delete
 if "%slt%"=="1" goto delete1
 if "%slt%"=="0" goto mainMenu
-echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
 echo.
 pause
 goto delete
 :delete1
 bcdedit %store% /delete %currentItemGUID% /cleanup
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 set modified=1
 set menu=mainMenu
@@ -290,23 +291,23 @@ goto convertItems
 echo.
 bcdedit %store% /default %currentItemGUID%
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 goto convertItems
 
 :bootSequenceAddFirst
 goto bootSequenceAddFirst1
-rem Ã»Ğ´ºÃÄØ
+rem æ²¡å†™å¥½å‘¢
 for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
     if %%A==bootsequence (
-        if %%B==%currentItemGUID% echo ÏÂÒ»´ÎÆô¶¯½«ÏÈÆô¶¯´ËÏî¡£
+        if %%B==%currentItemGUID% echo ä¸‹ä¸€æ¬¡å¯åŠ¨å°†å…ˆå¯åŠ¨æ­¤é¡¹ã€‚
     )
 )
 :bootSequenceAddFirst1
 echo.
 bcdedit %store% /bootsequence %currentItemGUID% /addfirst
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 set modified=0
 set menu=mainMenu
@@ -325,15 +326,15 @@ goto convertItems
 :global
 :globalMainMenu
 cls
-if "%store%"=="" (echo µ±Ç°Ñ¡¶¨µÄ´æ´¢£º´ËÏµÍ³µÄBCD) else (echo µ±Ç°Ñ¡¶¨µÄ´æ´¢£º%store:/store =%)
+if "%store%"=="" (echo å½“å‰é€‰å®šçš„å­˜å‚¨ï¼šæ­¤ç³»ç»Ÿçš„BCD) else (echo å½“å‰é€‰å®šçš„å­˜å‚¨ï¼š%store:/store =%)
 echo.
-echo [1]       ĞŞ¸ÄÏÔÊ¾²Ëµ¥µÄÊ±³¤
-echo [2]       ĞŞ¸ÄÊÇ·ñÏÔÊ¾²Ëµ¥
-if "%store%"=="" echo [397]     µ¼³öµ±Ç°ÏµÍ³BCD
-if "%store%"=="" echo [467]     ÓÃÍâ²¿ÎÄ¼şÌæ»»µ±Ç°ÏµÍ³BCD
-echo [0]       ·µ»ØÖ÷²Ëµ¥
+echo [1]       ä¿®æ”¹æ˜¾ç¤ºèœå•çš„æ—¶é•¿
+echo [2]       ä¿®æ”¹æ˜¯å¦æ˜¾ç¤ºèœå•
+if "%store%"=="" echo [397]     å¯¼å‡ºå½“å‰ç³»ç»ŸBCD
+if "%store%"=="" echo [467]     ç”¨å¤–éƒ¨æ–‡ä»¶æ›¿æ¢å½“å‰ç³»ç»ŸBCD
+echo [0]       è¿”å›ä¸»èœå•
 echo.
-echo ÊäÈëÄãÑ¡ÔñµÄ±àºÅ£¬È»ºó°´ÏÂEnter¡£
+echo è¾“å…¥ä½ é€‰æ‹©çš„ç¼–å·ï¼Œç„¶åæŒ‰ä¸‹Enterã€‚
 set slt=
 set /p "slt=>" 
 echo.
@@ -347,38 +348,38 @@ if "%slt%"=="2" (
 if "%slt%"=="397" goto currentExport
 if "%slt%"=="467" goto currentImport
 if "%slt%"=="0" goto mainMenu
-echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
 echo.
 pause
 goto globalMainMenu
 
 :timeout
 cls
-set timeout=Î´Ö¸¶¨
+set timeout=æœªæŒ‡å®š
 for /f "tokens=1,2" %%A in ('bcdedit %store%') do (
     if %%A==timeout set timeout=%%B
 )
-echo µ±Ç°²Ëµ¥Ê±³¤£º%timeout%Ãë£¬ÔİÊ±²»È·¶¨¸ÃÖµÎª0µÄĞ§¹û¡£
+echo å½“å‰èœå•æ—¶é•¿ï¼š%timeout%ç§’ï¼Œæš‚æ—¶ä¸ç¡®å®šè¯¥å€¼ä¸º0çš„æ•ˆæœã€‚
 echo.
-echo ÇëÊäÈëĞÂµÄÊıÖµ£¬Ö»ÄÜÊÇ×ÔÈ»Êı¡£Áô¿ÕÔò±£³Ö²»±ä¡£
+echo è¯·è¾“å…¥æ–°çš„æ•°å€¼ï¼Œåªèƒ½æ˜¯è‡ªç„¶æ•°ã€‚ç•™ç©ºåˆ™ä¿æŒä¸å˜ã€‚
 echo.
 set /p "timeout=>"
 echo.
 bcdedit %store% /timeout %timeout%
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 goto globalMainMenu
 
 :changeBool
 cls
-set bool=Î´Ö¸¶¨
+set bool=æœªæŒ‡å®š
 for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
     if %%A==%boolName% set bool=%%B
 )
-echo µ±Ç°²¼¶ûÖµÎª£º%boolName%   %bool%
+echo å½“å‰å¸ƒå°”å€¼ä¸ºï¼š%boolName%   %bool%
 echo.
-echo ÇëÑ¡ÔñÄãÒªµÄÖµ¡£ÊäÈë..¿É·µ»Ø¡£
+echo è¯·é€‰æ‹©ä½ è¦çš„å€¼ã€‚è¾“å…¥..å¯è¿”å›ã€‚
 echo [1] YES    [0] NO
 echo.
 set slt=
@@ -388,7 +389,7 @@ if "%slt%"=="" goto changeBool
 if "%slt%"=="1" goto changeBool1
 if "%slt%"=="0" goto changeBool1
 if "%slt%"==".." goto globalMainMenu
-echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
 echo.
 pause
 goto changeBool
@@ -396,15 +397,15 @@ goto changeBool
 set bool=%slt%
 bcdedit %store% /set {bootmgr} %boolName% %bool%
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 goto convertItems
 
 :currentExport
 cls
-echo Äã½«Òªµ¼³öµ±Ç°ÏµÍ³BCD¡£
-echo ÇëÊäÈëÄ¿±êÎÄ¼şÂ·¾¶£¬ÎŞĞèÌí¼ÓË«ÒıºÅ¡£´Ë´¦²»¼ì²âÂ·¾¶ÊÇ·ñÓĞĞ§¡£
-echo ÊäÈë..¿É·µ»Ø¡£
+echo ä½ å°†è¦å¯¼å‡ºå½“å‰ç³»ç»ŸBCDã€‚
+echo è¯·è¾“å…¥ç›®æ ‡æ–‡ä»¶è·¯å¾„ï¼Œæ— éœ€æ·»åŠ åŒå¼•å·ã€‚æ­¤å¤„ä¸æ£€æµ‹è·¯å¾„æ˜¯å¦æœ‰æ•ˆã€‚
+echo è¾“å…¥..å¯è¿”å›ã€‚
 set slt=
 set /p "slt=>"
 echo.
@@ -412,42 +413,42 @@ if "%slt%"=="" goto currentExport
 if "%slt%"==".." goto globalMainMenu
 bcdedit /export "%slt%"
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 goto globalMainMenu
 :currentImport
 cls
-echo Äã½«Òªµ¼Èëµ±Ç°ÏµÍ³BCD¡£
-echo ±¾³ÌĞò»áÊ¹ÓÃ/clean²ÎÊı¡£
-echo ÔÚEFIÆô¶¯µÄÏµÍ³ÉÏ£¬Õâ¸ö²ÎÊı»áÉ¾³ıËùÓĞµÄÏÖÓĞ¹Ì¼şÆô¶¯Ïî¡£
+echo ä½ å°†è¦å¯¼å…¥å½“å‰ç³»ç»ŸBCDã€‚
+echo æœ¬ç¨‹åºä¼šä½¿ç”¨/cleanå‚æ•°ã€‚
+echo åœ¨EFIå¯åŠ¨çš„ç³»ç»Ÿä¸Šï¼Œè¿™ä¸ªå‚æ•°ä¼šåˆ é™¤æ‰€æœ‰çš„ç°æœ‰å›ºä»¶å¯åŠ¨é¡¹ã€‚
 echo.
-echo ÇëÊäÈëÒªµ¼ÈëµÄÎÄ¼şÂ·¾¶£¬ÎŞĞèÊäÈëË«ÒıºÅ¡£
-echo ÊäÈë..¿É·µ»Ø¡£
+echo è¯·è¾“å…¥è¦å¯¼å…¥çš„æ–‡ä»¶è·¯å¾„ï¼Œæ— éœ€è¾“å…¥åŒå¼•å·ã€‚
+echo è¾“å…¥..å¯è¿”å›ã€‚
 set slt=
 set /p "slt=>"
 echo.
 if "%slt%"=="" goto currentImport
 if "%slt%"==".." goto globalMainMenu
 if not exist "%slt%" (
-    echo ÄãÊäÈëµÄÎÄ¼ş²»´æÔÚ£¬ÇëÖØĞÂÊäÈë¡£
+    echo ä½ è¾“å…¥çš„æ–‡ä»¶ä¸å­˜åœ¨ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
     echo.
     pause
     goto currentImport
 )
 bcdedit /import "%slt%" /clean
 echo.
-if ERRORLEVEL 1 echo ·¢ÉúÁË´íÎó¡£ & echo.
+if ERRORLEVEL 1 echo å‘ç”Ÿäº†é”™è¯¯ã€‚ & echo.
 pause
 goto globalMainMenu
 
 :settings
 :settingsMainMenu
 cls
-echo BCDMaster ÉèÖÃ
+echo BCDMaster è®¾ç½®
 echo.
-rem echo [1] Ìí¼Ó/É¾³ıÓÒ¼ü²Ëµ¥
-echo [2] ¹ÜÀí½çÃæÑÕÉ«
-echo [0] ·µ»ØÖ÷²Ëµ¥
+rem echo [1] æ·»åŠ /åˆ é™¤å³é”®èœå•
+echo [2] ç®¡ç†ç•Œé¢é¢œè‰²
+echo [0] è¿”å›ä¸»èœå•
 echo. 
 set slt=
 set /p "slt=>"
@@ -456,13 +457,13 @@ if "%slt%"=="" goto settingsMainMenu
 if "%slt%"=="1" goto contextMenuManage
 if "%slt%"=="2" goto changeColor
 if "%slt%"=="0" goto mainMenu
-echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
 echo.
 pause
 goto settingsMainMenu
 
 :contextMenuManage
-echo ¸Ã¹¦ÄÜÉĞÎ´Íê¹¤¡£
+echo è¯¥åŠŸèƒ½å°šæœªå®Œå·¥ã€‚
 echo.
 pause
 goto settingsMainMenu
@@ -470,13 +471,13 @@ goto settingsMainMenu
 :changeColor
 if not exist "%AppData%\9826" mkdir "%AppData%\9826"
 cls
-echo Èç¹ûÊ¹ÓÃWindows ÖÕ¶ËÇÒÉèÖÃÁË±³¾°Í¼Æ¬£¬ÄÇÃ´½¨ÒéÊ¹ÓÃºÚ°×ÑÕÉ«¡£
+echo å¦‚æœä½¿ç”¨Windows ç»ˆç«¯ä¸”è®¾ç½®äº†èƒŒæ™¯å›¾ç‰‡ï¼Œé‚£ä¹ˆå»ºè®®ä½¿ç”¨é»‘ç™½é¢œè‰²ã€‚
 echo.
-echo Ñ¡ÔñÄãÒªµÄÑÕÉ«
-echo [1]·Ûµ× [2]»ÆÉ« [3]ÂÌÉ« [4]ÁÁ×Ï [5]À¶ÂÌ [6]À¶µ×
-echo [7]ºÚ°× [8]ÂÌµ× [9]»ÒºÚ [a]»Æµ× [b]×Ïµ×
+echo é€‰æ‹©ä½ è¦çš„é¢œè‰²
+echo [1]ç²‰åº• [2]é»„è‰² [3]ç»¿è‰² [4]äº®ç´« [5]è“ç»¿ [6]è“åº•
+echo [7]é»‘ç™½ [8]ç»¿åº• [9]ç°é»‘ [a]é»„åº• [b]ç´«åº•
 echo.
-set /p co=Ñ¡Ôñ£º
+set /p co=é€‰æ‹©ï¼š
 if "%co%"=="1" set co= & color df & echo color df>>"%AppData%\9826\color.bat"
 if "%co%"=="2" set co= & color 0e & echo color 0e>>"%AppData%\9826\color.bat"
 if "%co%"=="3" set co= & color 0a & echo color 0a>>"%AppData%\9826\color.bat"
@@ -490,7 +491,7 @@ if /i "%co%"=="a" set co= & color 6f & echo color 6f>>"%AppData%\9826\color.bat"
 if /i "%co%"=="b" set co= & color 5f & echo color 5f>>"%AppData%\9826\color.bat"
 if "%co%"=="" goto settingsMainMenu
 echo.
-echo ÄãµÄÊäÈëÓĞÎó£¬ÇëÖØĞÂÊäÈë¡£
+echo ä½ çš„è¾“å…¥æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚
 echo.
 pause
 goto changeColor
