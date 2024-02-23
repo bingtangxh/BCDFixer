@@ -197,19 +197,29 @@ echo.
 set /p "numSelected=>"
 :defineSelection
 if "%numSelected%"=="{current}" (
-    if not "%store%"=="" (
+    if "%store%"=="" (
+        echo. & echo 该特性尚未完工，无法确定接下来的行为。 & echo. & pause
+        for /f "usebackq tokens=1-10" %%A in (`bcdedit /enum {current}`) do (
+            if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
+        )
+        set currentItemGUID={current}
+        set num=-1
+        set A=
+        for /f "usebackq tokens=1,2" %%A in (`bcdedit %store% /enum ACTIVE`) do (
+            set A=%%A
+            if "!A:~0,7!"=="Windows" set /a num+=1
+            if %%A==标识符 (
+                if %%B=={current} set numSelected=!num!
+            )
+        )
+        goto mainMenu
+    ) else (
         echo.
         echo 当前选定的存储不是系统默认存储，所以不存在所谓的{current}。
         echo 请重新选定BCD文件。
         echo.
         pause
         goto defineBCDStore1
-    ) else (
-        for /f "usebackq tokens=1-10" %%A in (`bcdedit /enum {current}`) do (
-            if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
-        )
-        set currentItemGUID={current}
-        goto mainMenu
     )
 )
 if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
@@ -229,7 +239,9 @@ if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
     pause
     goto select
 )
-if "%numSelected%"=="{current}" echo. & echo 该特性尚未完工，无法确定接下来的行为。 & echo. & pause
+if "%numSelected%"=="{current}" (
+    rem (test)此if语句废弃
+)
 goto mainMenu
 
 :create
