@@ -1,6 +1,6 @@
 #pragma comment(lib, "Ole32.lib")
 #include <combaseapi.h>
-#include <stdio.h>
+#include <iostream>
 
 int main(void)
 {
@@ -19,5 +19,5 @@ int main(void)
               guid.Data4[6], guid.Data4[7]);
     printf("guid: %s\n", buffer);
 
-    return 0;
+    return 0;3
 }

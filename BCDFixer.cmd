@@ -124,7 +124,7 @@ set The operation completed successfully.=原来是用这种方式来解决的吗？太厉害了！
 cls
 echo                     BCD Master主菜单
 echo.
-if "%store%"=="" (echo 当前选定的存储：此系统的BCD) else (echo 当前选定的存储：%store:/store =%)
+if "%store%"=="" (echo 当前选定的存储：       此系统的BCD) else (echo 当前选定的存储：       %store:/store =%)
 echo 当前选定的启动项目：   %currentItemDescription%
 echo 当前选定的GUID：       %currentItemGUID%    %numSelected%
 for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
@@ -175,6 +175,17 @@ echo.
 :scan1
 set /a num+=1
 if not exist "%temp%\9826\BCDMast\items\item%num%.txt" goto scan2
+set /a "numPause=num%%5-1"
+if /i %numPause% EQU 0 (
+    if /i !num! GTR 1 (
+        set /a num+=1
+        if exist "%temp%\9826\BCDMast\items\item!num!.txt" (
+            echo.&pause
+            cls
+        )
+        set /a num-=1
+    )
+)
 rem 在这个循环当中，第一个要显示的属性前加上显示启动项编号，最后一个后加上显示空行。
 rem 这里只显示了两个属性。
 for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%num%.txt") do (
@@ -196,6 +207,7 @@ echo 要修改当前操作系统，请输入{current}，包括花（大）括号。
 echo.
 set /p "numSelected=>"
 :defineSelection
+goto newC1
 if "%numSelected%"=="{current}" (
     if not "%store%"=="" (
         echo.
@@ -210,6 +222,44 @@ if "%numSelected%"=="{current}" (
         )
         set currentItemGUID={current}
         goto mainMenu
+    )
+)
+:newC1
+if "%numSelected%"=="{current}" (
+    if "%store%"=="" (
+        echo. & echo 该特性尚未完工，无法确定接下来的行为。 & echo. & pause
+        for /f "usebackq tokens=1-10" %%A in (`bcdedit /enum {current}`) do (
+            if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
+        )
+        rem set currentItemGUID={current}
+        set num=-1
+        set A=
+        for /f "usebackq tokens=1,2" %%A in (`bcdedit %store% /enum ACTIVE`) do (
+            set A=%%A
+            if "!A:~0,7!"=="Windows" set /a num+=1
+            if %%A==标识符 (
+                if %%B=={current} set numSelected=!num!
+            )
+        )
+        set num=-1
+        set A=
+        for /f "usebackq tokens=1,2" %%A in (`bcdedit %store% /enum ACTIVE /v`) do (
+            set A=%%A
+            if "!A:~0,7!"=="Windows" set /a num+=1
+            if %%A==标识符 (
+                if /i !numSelected! EQU !num! (
+                    set currentItemGUID=%%B
+                )
+            )
+        )
+        goto mainMenu
+    ) else (
+        echo.
+        echo 当前选定的存储不是系统默认存储，所以不存在所谓的{current}。
+        echo 请重新选定BCD文件。
+        echo.
+        pause
+        goto defineBCDStore1
     )
 )
 if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
@@ -240,8 +290,14 @@ goto mainMenu
 
 :copy
 cls
+echo                     复制当前启动项目
+echo.
+echo 当前选定的启动项目：   %currentItemDescription%
+echo 当前选定的GUID：       %currentItemGUID%
+echo.
 echo 请输入新启动项目的描述，无需输入双引号。
 echo 如留空则不复制并返回。
+echo.
 echo 输入完毕后按Enter。
 echo.
 set slt=
@@ -259,6 +315,8 @@ goto convertItems
 
 :delete
 cls
+echo                     删除当前启动项目
+echo.
 echo 天哪，我的老伙计，你要删除此项目吗？
 echo 我是说，你真的要删除此项目吗？
 echo.
@@ -325,6 +383,8 @@ goto convertItems
 :global
 :globalMainMenu
 cls
+echo                     更改BCD全局设定
+echo.
 if "%store%"=="" (echo 当前选定的存储：此系统的BCD) else (echo 当前选定的存储：%store:/store =%)
 echo.
 echo [1]       修改显示菜单的时长
@@ -376,6 +436,8 @@ set bool=未指定
 for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
     if %%A==%boolName% set bool=%%B
 )
+echo 当前选定的启动项目：   %currentItemDescription%
+echo.
 echo 当前布尔值为：%boolName%   %bool%
 echo.
 echo 请选择你要的值。输入..可返回。
@@ -417,7 +479,7 @@ pause
 goto globalMainMenu
 :currentImport
 cls
-echo 你将要导入当前系统BCD。
+echo 你将要从外部导入并替换当前系统BCD。
 echo 本程序会使用/clean参数。
 echo 在EFI启动的系统上，这个参数会删除所有的现有固件启动项。
 echo.
@@ -443,7 +505,9 @@ goto globalMainMenu
 :settings
 :settingsMainMenu
 cls
-echo BCDMaster 设置
+echo                     BCDMaster 设置
+echo.
+echo   当前本程序路径：%~dpnx0
 echo.
 rem echo [1] 添加/删除右键菜单
 echo [2] 管理界面颜色
