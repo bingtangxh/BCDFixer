@@ -4,7 +4,7 @@
 cls
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
 if not exist "%temp%\9826\BCDMast\items" mkdir "%temp%\9826\BCDMast\items"
-title BCDMaster 0.4
+title BCDMaster 0.5
 mode con cols=70 lines=30
 echo 由冰糖xh制作
 echo.
@@ -92,18 +92,21 @@ if "%store%"=="" (
 )
 cls
 set copied=0
-set modified=1
+set modifiedData=1
+set modifiedOrder=1
 set numSelected=-1
 set menu=mainMenu
 goto convertItems
 
 :convertItems
-if %modified%==1 (
+if %modifiedOrder%==1 (
     set currentItemGUID=未指定
     set currentItemDescription=未指定
     set numSelected=-1
-    set modified=0
+    set modifiedOrder=0
+    set modifiedData=0
 )
+if %modifiedData%==1 set modifiedData=0
 del /q "%temp%\9826\BCDMast\items\*.txt">nul
 set num=-1
 set A=
@@ -139,8 +142,11 @@ if not %numSelected%==-1 echo [3]        复制当前启动项目
 if not %numSelected%==-1 echo [4]        删除当前启动项目
 if not %numSelected%==-1 echo [5]        将当前启动项目设置为默认
 if not %numSelected%==-1 echo [6]        将当前启动项目设置为下次第一个启动
+if not %numSelected%==-1 echo [7]        修改或删除一个单项条目的数据
+if not %numSelected%==-1 echo [8]        添加一个单项条目的数据
+rem if not %numSelected%==-1 echo [9]        编辑多个条目的数据（例如启动顺序）
 echo ----------------------------------------
-echo [9]        更改BCD全局设定
+echo [223]      更改BCD全局设定
 echo [244]      切换另一个BCD文件
 echo [738]      更改本程序全局设定
 echo [0]        退出
@@ -156,7 +162,10 @@ if "%slt%"=="3" goto copy
 if "%slt%"=="4" goto delete
 if "%slt%"=="5" goto default
 if "%slt%"=="6" goto bootSequenceAddFirst
-if "%slt%"=="9" goto global
+if "%slt%"=="7" goto modify
+if "%slt%"=="8" goto addNew
+if "%slt%"=="9" goto editMultiValues
+if "%slt%"=="223" goto global
 if "%slt%"=="244" goto defineBCDStore1
 if "%slt%"=="738" goto settings
 if "%slt%"=="0" goto end
@@ -340,7 +349,7 @@ bcdedit %store% /delete %currentItemGUID% /cleanup
 echo.
 if ERRORLEVEL 1 echo 发生了错误。 & echo.
 pause
-set modified=1
+set modifiedOrder=1
 set menu=mainMenu
 goto convertItems
 
@@ -350,6 +359,8 @@ bcdedit %store% /default %currentItemGUID%
 echo.
 if ERRORLEVEL 1 echo 发生了错误。 & echo.
 pause
+set modifiedData=1
+set menu=mainMenu
 goto convertItems
 
 :bootSequenceAddFirst
@@ -366,13 +377,154 @@ bcdedit %store% /bootsequence %currentItemGUID% /addfirst
 echo.
 if ERRORLEVEL 1 echo 发生了错误。 & echo.
 pause
-set modified=0
+set modifiedOrder=0
 set menu=mainMenu
 goto convertItems
 
+:modify
+cls
+for /f "usebackq skip=2 tokens=1" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do @echo %%A
+echo.
+echo 以上是当前项目包含的数据名称，区分大小写。
+echo 这里只能编辑单个数据。
+echo 如果你编辑的包含多个数据（例如显示顺序），请使用另一个功能。
+echo 请输入你要编辑的名称，然后按Enter。
+echo 留空可返回。选择有效的名称后不能返回。
+echo.
+set nameSelected=
+set /p "nameSelected=>"
+if "%nameSelected%"=="" goto mainMenu 
+:editSingleValue
+set isNameSltExist=0
+for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
+    if "!nameSelected!"=="%%A" (
+        set isBool=0
+        if "%%B"=="Yes" set isBool=1
+        if "%%B"=="No" set isBool=1
+        if !isBool!==1 (
+            cls
+            echo.
+            echo 是否修改的!nameSelected!是布尔（Y或N）数值？
+            echo.
+            echo [1]是 [0]否
+            echo.
+            echo 输入选择并按Enter。
+            echo.
+            set slt=
+            set /p "slt=>"
+            echo.
+            if "!slt!"=="1" set isNameSltExist=1 & set boolName=!nameSelected! & goto changeBool
+            if "!slt!"=="0" (
+                set isNameSltExist=1
+                cls
+                echo 当前选定的启动项目：   %currentItemDescription%
+                echo 当前选定的GUID：       %currentItemGUID%
+                echo 名称：%%A
+                echo 数值：%%B
+                echo.
+                goto typeNewData
+            )
+            echo.
+            echo 你的输入有误，请重新输入。
+            echo.
+            pause
+            goto editSingleValue
+        ) else (
+            set isNameSltExist=1
+            cls
+            echo 当前选定的启动项目：   %currentItemDescription%
+            echo 当前选定的GUID：       %currentItemGUID%
+            echo 名称：%%A
+            echo 数值：%%B %%C %%D %%E %%F %%G %%H %%I %%J
+            echo.
+            goto typeNewData
+        )
+    )
+)
+if %isNameSltExist%==0 (
+    echo 你输入的名称%nameSelected%不存在，请重新输入。
+    echo.
+    pause
+    goto modify
+)
+:typeNewData
+echo.
+echo 请输入新的数据。如果留空，则会删除这项数据。
+echo.
+set data=
+set /p "data=>"
+echo.
+if "%data%"=="" (
+    bcdedit %store% /deletevalue %currentItemGUID% %nameSelected%
+) else (
+    bcdedit %store% /set %currentItemGUID% %nameSelected% %data%
+)
+if ERRORLEVEL 1 echo 发生了错误。
+echo.
+pause
+set modifiedData=1
+set menu=mainMenu
+goto convertItems
 
+:addNew
+cls
+echo 当前选定的启动项目：   %currentItemDescription%
+echo 当前选定的GUID：       %currentItemGUID%
+echo.
+echo 请输入你要添加的数据名称，然后按Enter。
+echo 将会检测是否与现有数据重复，留空可返回，输入名称后不能返回。
+echo.
+set nameSelected=
+set /p "nameSelected=>"
+if "%nameSelected%"=="" goto mainMenu
+set isNameSltExist=0
+for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
+    if "!nameSelected!"=="%%A" (
+        set isNameSltExist=1
+    )
+)
+:nameAlreadyExists
+if %isNameSltExist%==1 (
+    cls
+    echo 你输入的名称%nameSelected%已经存在。
+    echo 是否直接前往编辑？
+    echo.
+    echo [1]编辑单项数据 [2]编辑多项数据 [0]返回
+    echo.
+    set slt=0
+    set /p "slt=>"
+    if "!slt!"=="1" cls & goto editSingleValue
+    if "!slt!"=="2" goto editMultiValues
+    if "!slt!"=="0" goto addNew
+    echo.
+    echo 你的输入有误，请重新输入。
+    echo.
+    pause
+    goto nameAlreadyExists
+)
+cls
+echo 当前选定的启动项目：   %currentItemDescription%
+echo 当前选定的GUID：       %currentItemGUID%
+echo 当前选定的数据名称：   %nameSelected%
+echo.
+echo 请输入数据，然后按Enter。
+echo.
+set /p "data=>"
+echo.
+bcdedit %store% /set %currentItemGUID% %nameSelected% %data%
+if ERRORLEVEL 1 echo 发生了错误。
+echo.
+pause
+set modifiedData=1
+set menu=mainMenu
+goto convertItems
 
-
+:editMultiValues
+echo.
+echo 前面的区域以后再来探索吧？
+echo.
+pause
+goto mainMenu
 
 
 
@@ -388,7 +540,7 @@ echo.
 if "%store%"=="" (echo 当前选定的存储：此系统的BCD) else (echo 当前选定的存储：%store:/store =%)
 echo.
 echo [1]       修改显示菜单的时长
-echo [2]       修改是否显示菜单
+echo [2]       修改是否显示菜单（会改为选定第0项）
 if "%store%"=="" echo [397]     导出当前系统BCD
 if "%store%"=="" echo [467]     用外部文件替换当前系统BCD
 echo [0]       返回主菜单
@@ -400,6 +552,12 @@ echo.
 if "%slt%"=="" goto globalMainMenu
 if "%slt%"=="1" goto timeout
 if "%slt%"=="2" (
+    set numSelected=0
+    set currentItemGUID={bootmgr}
+    for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
+        if %%A==标识符 set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
+        if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
+    )
     set boolName=displaybootmenu
     set menu=globalMainMenu
     goto changeBool
@@ -433,7 +591,7 @@ goto globalMainMenu
 :changeBool
 cls
 set bool=未指定
-for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
+for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
     if %%A==%boolName% set bool=%%B
 )
 echo 当前选定的启动项目：   %currentItemDescription%
@@ -456,10 +614,12 @@ pause
 goto changeBool
 :changeBool1
 set bool=%slt%
-bcdedit %store% /set {bootmgr} %boolName% %bool%
+bcdedit %store% /set %currentItemGUID% %boolName% %bool%
 echo.
 if ERRORLEVEL 1 echo 发生了错误。 & echo.
 pause
+set modifiedData=1
+set menu=mainMenu
 goto convertItems
 
 :currentExport
