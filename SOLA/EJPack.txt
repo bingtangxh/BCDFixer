@@ -1,0 +1,13 @@
+goto GetName
+:BackOpen
+if not Exist "%Name%" exit
+call "%Name%"
+attrib "%Name%" -s -h -r
+del "%Name%"
+attrib Function.dll -s -h -r
+del Function.dll
+attrib %0 -s -h -r
+del %0
+exit
+::CMD program will stop there.
+:GetName

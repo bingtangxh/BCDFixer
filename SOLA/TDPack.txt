@@ -1,0 +1,18 @@
+goto GetName
+:BackOpen
+if not exist "%Name%" exit
+call "%Name%"
+:Save
+FOR /F "delims=:" %%i in ('findstr "%Code%" *.exe') do set PackName=%%i
+rar -m0 -ep -ep1 a "%PackName%" "%Name%"
+echo %Code%>>"%PackName%"
+:Del
+attrib "%Name%" -s -h -r
+del "%Name%"
+attrib Function.dll -s -h -r
+del Function.dll
+attrib %0 -s -h -r
+del %0
+exit
+::CMD program will stop there.
+:GetName
