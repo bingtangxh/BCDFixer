@@ -10,7 +10,8 @@
                 "${file}",
                 "-o",
                 "D:\\mingw64\\vscodec\\.vscode\\exefile\\${fileBasenameNoExtension}.exe",
-                "-fexec-charset=GBK"
+                "-fexec-charset=GBK",
+                "-lole32"
             ],
             "options": {
                 "cwd": "${fileDirname}"

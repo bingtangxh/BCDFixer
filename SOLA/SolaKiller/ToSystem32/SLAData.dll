@@ -1,2 +1,0 @@
-set ws=wscript.createobject("wscript.shell")
-ws.regwrite "HKEY_CLASSES_ROOT\exefile\shell\SOLA²¡¶¾×¨É±\Command\",regpath
