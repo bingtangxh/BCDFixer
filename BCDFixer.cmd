@@ -8,7 +8,7 @@ cls
 
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
 if not exist "%temp%\9826\BCDMast\items" (mkdir "%temp%\9826\BCDMast\items") else rem
-title BCDFixer 0.5
+title BCDFixer 0.6
 mode con cols=70 lines=30
 echo 由冰糖xh制作
 echo.
@@ -74,7 +74,7 @@ if not "%~1"=="" (
 cls
 echo 请先设置你要修改哪个BCD文件。
 echo 如果为空，那么将使用当前系统BCD。
-echo 暂时没有写新建BCD的功能，请手动运行BCDBOOT。
+echo 如需新建一个BCD文件，请输入new。
 echo.
 echo 温馨提示：当你来到这里时已经是管理员身份，通常不能拖拽文件。
 echo.
@@ -82,6 +82,7 @@ echo 在下方输入路径。无需手动添加双引号，但不能有空格。
 echo.
 set store=
 set /p "store=>"
+if "%store%"=="new" goto newBCDStore
 :defineBCDStore2
 if "%store%"=="" (
     if not "%store%"=="" set store=/store "%store:"=%"
@@ -747,6 +748,73 @@ echo 你的输入有误，请重新输入。
 echo.
 pause
 goto changeColor
+
+:newBCDStore
+
+:defineWindowsPath
+cls
+echo 你选择了新建一个BCD文件。
+echo 本程序目前仅支持使用BCDBOOT命令，所以Win7及以下系统需要手动补齐bcdboot.exe。
+echo BCDBOOT指令只能指定将BCD放置于哪一个盘符，并不能自定义路径。
+echo 现在，请先输入Windows系统所在的文件夹。例如C:\Windows。
+echo 不允许含有空格，无需添加双引号。
+echo 留空可返回。
+echo.
+set windowsPath=
+set /p "windowsPath=>"
+if "%windowsPath%"=="" (goto defineBCDStore1) else (
+    if not exist "%windowsPath%" (
+        echo.
+        echo 你的输入有误，请重新输入。
+        echo.
+        pause
+        goto newBCDStore
+    )
+)
+
+:defineFirmwareType
+cls
+echo 请选择该BCD是用于BIOS还是UEFI启动。
+echo.
+echo [1] BIOS   [2]UEFI     [0]让BCDBOOT自行决定
+echo.
+echo 输入你选择的编号，然后按下Enter。留空可返回。
+echo.
+set firmwareTypeSlt=
+set /p "firmwareTypeSlt=>"
+if "%firmwareTypeSlt%"=="1" set firmwareType=/f BIOS
+if "%firmwareTypeSlt%"=="2" set firmwareType=/f UEFI
+if "%firmwareTypeSlt%"=="3" set firmwareType=
+if "%firmwareTypeSlt%"=="" goto defineWindowsPath
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+goto defineFirmwareType
+
+:defineBCDVolume
+cls
+echo 请输入要存放BCD的盘符。
+echo 这里只需要输入一个字母即可，不要输入冒号。
+echo BCDBOOT会根据你选择的固件类型放置于启动管理器会寻找的文件夹。
+echo 留空可返回。
+echo.
+set BCDVolume=
+set /p "BCDVolume=>"
+if "%BCDVolume%"=="" (goto defineFirmwareType) else (
+    if exist "%BCDVolume%:NUL" (
+        bcdboot %windowsPath% /s %BCDVolume%: %firmwareType% /l zh-cn
+        if errorlevel 1 (echo 发生了错误。 & echo.) else rem
+        pause
+        goto defineBCDStore1
+    ) else (
+        echo.
+        echo 你的输入有误，请重新输入。
+        echo.
+        pause
+        goto defineBCDVolume
+    )
+)
 
 :end
 del /q "%temp%\9826\BCDMast\items\*.txt">nul
