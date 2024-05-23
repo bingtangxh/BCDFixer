@@ -784,7 +784,7 @@ set firmwareTypeSlt=
 set /p "firmwareTypeSlt=>"
 if "%firmwareTypeSlt%"=="1" set firmwareType=/f BIOS
 if "%firmwareTypeSlt%"=="2" set firmwareType=/f UEFI
-if "%firmwareTypeSlt%"=="3" set firmwareType=
+if "%firmwareTypeSlt%"=="0" set firmwareType=
 if "%firmwareTypeSlt%"=="" goto defineWindowsPath
 echo.
 echo 你的输入有误，请重新输入。
