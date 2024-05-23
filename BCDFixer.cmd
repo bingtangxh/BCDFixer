@@ -1,40 +1,46 @@
+
 :start
+
 :init
+
 @echo off
 cls
+
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
-if not exist "%temp%\9826\BCDMast\items" mkdir "%temp%\9826\BCDMast\items"
-title BCDMaster 0.5
+if not exist "%temp%\9826\BCDMast\items" (mkdir "%temp%\9826\BCDMast\items") else rem
+title BCDFixer 0.5
 mode con cols=70 lines=30
 echo 由冰糖xh制作
 echo.
 cls
 
 :selfCheck
+
 bcdedit>nul
-if not ERRORLEVEL 1 goto selfCheck2
+if not ERRORLEVEL 1 (goto selfCheck2) else rem
 echo 获取当前BCD内容发生错误，可能是没有管理员身份运行。
 echo.
 echo 本程序将尝试以管理员身份重启。
 if not "%~1"=="" (
     echo.
     echo 检测到argv[1]不是空的，因此不一定能完美地自行提权。
+    echo 本程序不允许路径含有空格。
+    echo.
     echo argv[1]==%1
     echo.
     echo 如果进入主菜单后，发现显示的BCD路径不正确，那么请自行以管理员身份运行。
     pause
-)
-echo.
+) else echo.
 ver|findstr "[3-5]\.[0-9]\.[0-9]*" 1>nul 2>nul && goto st
 fltmc 1>nul 2>nul && goto st
 set parameters=
 :parameter
 if not "%~1"=="" (
     set parameters=%parameters% %~1
+    rem 这里看似用了百分号，没有用感叹号，实际上这里不影响。
     shift /1
-    goto :parameter
-)
-set parameters="%parameters:~1%"
+    goto parameter
+) else set parameters="%parameters:~1%"
 
 mshta vbscript:createobject("shell.application").shellexecute("%~s0",%parameters%,"","runas",1)(window.close) & exit
 cd /d %~dp0 
@@ -55,7 +61,7 @@ IF ERRORLEVEL 1 (
 )
 
 :defineBCDStore
-if "%1"=="~1" goto defineBCDStore1
+if "%1"=="~1" (goto defineBCDStore1) else rem
 if not "%~1"=="" (
     set store="%~1"
     echo 已检测到第1个参数，将直接进入主菜单。
@@ -63,16 +69,16 @@ if not "%~1"=="" (
     echo.
     pause
     goto defineBCDStore2
-)
+) else rem
 :defineBCDStore1
 cls
 echo 请先设置你要修改哪个BCD文件。
 echo 如果为空，那么将使用当前系统BCD。
-echo 没有写新建BCD的功能，请手动运行BCDBOOT。
+echo 暂时没有写新建BCD的功能，请手动运行BCDBOOT。
 echo.
 echo 温馨提示：当你来到这里时已经是管理员身份，通常不能拖拽文件。
 echo.
-echo 在下方输入路径。无需手动添加双引号。
+echo 在下方输入路径。无需手动添加双引号，但不能有空格。
 echo.
 set store=
 set /p "store=>"
@@ -84,8 +90,13 @@ if "%store%"=="" (
         echo.
         echo 你输入的文件%store%不存在，请重新输入。
         echo.
+        echo 如果你的路径含有空格，请重命名或移动文件使其路径不含空格。
+        echo.
         pause
-        goto defineBCDStore
+        goto defineBCDStore1
+        rem 这里本来是跳转到defineBCDStore
+        rem 但是这样的话，如果传递的argv[1]不存在，那么程序就会陷入死循环
+        rem 所以改成如果检测到argv[1]不存在就强制要求用户输入
     ) else (
         set store=/store "%store:"=%"
     )
@@ -104,9 +115,8 @@ if %modifiedOrder%==1 (
     set currentItemDescription=未指定
     set numSelected=-1
     set modifiedOrder=0
-    set modifiedData=0
-)
-if %modifiedData%==1 set modifiedData=0
+) else rem
+set modifiedData=0
 del /q "%temp%\9826\BCDMast\items\*.txt">nul
 set num=-1
 set A=
@@ -119,15 +129,18 @@ if %copied%==1 (
     set numSelected=%num%
     set copied=0
     goto defineSelection
-)
-goto %menu%
+) else goto %menu%
 
 :mainMenu
 set The operation completed successfully.=原来是用这种方式来解决的吗？太厉害了！
 cls
 echo                     BCD Master主菜单
 echo.
-if "%store%"=="" (echo 当前选定的存储：       此系统的BCD) else (echo 当前选定的存储：       %store:/store =%)
+if "%store%"=="" (
+    echo 当前选定的存储：       此系统的BCD
+) else (
+    echo 当前选定的存储：       %store:/store =%
+)
 echo 当前选定的启动项目：   %currentItemDescription%
 echo 当前选定的GUID：       %currentItemGUID%    %numSelected%
 for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
@@ -181,20 +194,35 @@ cls
 set num=-1
 echo 第0个项目的描述通常是Windows Boot Manager，存储一些全局设定。
 echo.
+
 :scan1
 set /a num+=1
-if not exist "%temp%\9826\BCDMast\items\item%num%.txt" goto scan2
-set /a "numPause=num%%5-1"
-if /i %numPause% EQU 0 (
-    if /i !num! GTR 1 (
-        set /a num+=1
-        if exist "%temp%\9826\BCDMast\items\item!num!.txt" (
-            echo.&pause
-            cls
-        )
-        set /a num-=1
+if exist "%temp%\9826\BCDMast\items\item%num%.txt" (
+    rem scan1这是一个循环，上一行是检测是否需要跳出。而scan2在全部项目扫描完毕后执行。
+    set /a "numPause=num%%5-1"
+    if /i !numPause! EQU 0 (
+        if /i %num% NEQ 1 (
+            echo 留空直接按Enter可查看下一页。
+            goto inquireSelection
+        )   
     )
+) else (
+    set num=0
+    echo 留空直接按Enter可回到第一页。
+    goto inquireSelection
 )
+goto inquireSelection2
+:inquireSelection
+echo 请输入你要修改的项目序号，然后按Enter。
+rem echo 要修改当前操作系统，请输入{current}，包括花（大）括号。
+echo.
+set numSelected=
+set /p "numSelected=>"
+if "!numSelected!"=="" (cls) else goto defineSelection
+
+
+:inquireSelection2
+
 rem 在这个循环当中，第一个要显示的属性前加上显示启动项编号，最后一个后加上显示空行。
 rem 这里只显示了两个属性。
 for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%num%.txt") do (
@@ -208,31 +236,28 @@ for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%num%.txt")
     )
 )
 goto scan1
+
 :scan2
 
-:inquireSelection
-echo 请输入你要修改的项目序号，然后按Enter。
-echo 要修改当前操作系统，请输入{current}，包括花（大）括号。
-echo.
-set /p "numSelected=>"
 :defineSelection
 goto newC1
-if "%numSelected%"=="{current}" (
-    if not "%store%"=="" (
-        echo.
-        echo 当前选定的存储不是系统默认存储，所以不存在所谓的{current}。
-        echo 请重新选定BCD文件。
-        echo.
-        pause
-        goto defineBCDStore1
-    ) else (
-        for /f "usebackq tokens=1-10" %%A in (`bcdedit /enum {current}`) do (
-            if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
-        )
-        set currentItemGUID={current}
-        goto mainMenu
-    )
-)
+rem 该代码块大抵是废弃了
+@REM if "%numSelected%"=="{current}" (
+@REM     if not "%store%"=="" (
+@REM         echo.
+@REM         echo 当前选定的存储不是系统默认存储，所以不存在所谓的{current}。
+@REM         echo 请重新选定BCD文件。
+@REM         echo.
+@REM         pause
+@REM         goto defineBCDStore1
+@REM     ) else (
+@REM         for /f "usebackq tokens=1-10" %%A in (`bcdedit /enum {current}`) do (
+@REM             if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
+@REM         )
+@REM         set currentItemGUID={current}
+@REM         goto mainMenu
+@REM     )
+@REM )
 :newC1
 if "%numSelected%"=="{current}" (
     if "%store%"=="" (
@@ -273,7 +298,6 @@ if "%numSelected%"=="{current}" (
 )
 if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
     for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
-        rem echo 1
         if %%A==标识符 (
             set currentItemGUID=%%B
         )
@@ -700,6 +724,7 @@ echo 选择你要的颜色，字母不区分大小写。
 echo.
 echo [1]默认 [2]亮白 [3]绿色 [4]紫色 [5]蓝绿 [6]黄色
 echo [7]蓝底 [8]绿底 [9]灰底 [A]黄底 [B]紫底 [C]粉底
+echo.
 echo [0]返回
 echo.
 set /p co=选择：
