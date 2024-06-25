@@ -135,7 +135,7 @@ if %copied%==1 (
 :mainMenu
 set The operation completed successfully.=原来是用这种方式来解决的吗？太厉害了！
 cls
-echo                     BCD Master主菜单
+echo                     BCD Fixer主菜单
 echo.
 if "%store%"=="" (
     echo 当前选定的存储：       此系统的BCD
@@ -690,7 +690,7 @@ goto globalMainMenu
 :settings
 :settingsMainMenu
 cls
-echo                     BCDMaster 设置
+echo                     BCDFixer 设置
 echo.
 echo   当前本程序路径：%~dpnx0
 echo.
@@ -819,4 +819,6 @@ if "%BCDVolume%"=="" (goto defineFirmwareType) else (
 :end
 del /q "%temp%\9826\BCDMast\items\*.txt">nul
 rd /s /q "%temp%\9826\BCDMast\items">nul
+endlocal
+endlocal
 rem pause
