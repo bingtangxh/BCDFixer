@@ -7,7 +7,7 @@
 cls
 
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
-if not exist "%temp%\9826\BCDMast\items" (mkdir "%temp%\9826\BCDMast\items") else rem
+if not exist "%temp%\9826\BCDFixer\items" (mkdir "%temp%\9826\BCDFixer\items") else rem
 title BCDFixer 0.6
 mode con cols=70 lines=30
 echo 由冰糖xh制作
@@ -168,13 +168,13 @@ if %modifiedOrder%==1 (
     set modifiedOrder=0
 ) else rem
 set modifiedData=0
-del /q "%temp%\9826\BCDMast\items\*.txt">nul
+del /q "%temp%\9826\BCDFixer\items\*.txt">nul
 set num=-1
 set A=
 for /f "usebackq tokens=1,2 delims=" %%A in (`bcdedit %store% /enum ACTIVE /v`) do (
     set A=%%A
     if "!A:~0,7!"=="Windows" set /a num+=1
-    echo %%A>>"%temp%\9826\BCDMast\items\item!num!.txt"
+    echo %%A>>"%temp%\9826\BCDFixer\items\item!num!.txt"
 )
 if %copied%==1 (
     set numSelected=%num%
@@ -194,7 +194,7 @@ if "%store%"=="" (
 )
 echo 当前选定的启动项目：   %currentItemDescription%
 echo 当前选定的GUID：       %currentItemGUID%    %numSelected%
-for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
+for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDFixer\items\item0.txt") do (
     if %%A==bootsequence (
         if %%B==%currentItemGUID% echo 下一次启动将先启动此项。
     )
@@ -209,6 +209,7 @@ if not %numSelected%==-1 echo [6]        将当前启动项目设置为下次第一个启动
 if not %numSelected%==-1 echo [7]        修改或删除一个单项条目的数据
 if not %numSelected%==-1 echo [8]        添加一个单项条目的数据
 rem if not %numSelected%==-1 echo [9]        编辑多个条目的数据（例如启动顺序）
+if not %numSelected%==-1 echo [737]      快速指定启动分区为一个盘符【不支持 Ramdisk 或 VHD(X)中的系统】
 echo ----------------------------------------
 echo [223]      更改BCD全局设定
 echo [244]      切换另一个BCD文件
@@ -229,6 +230,7 @@ if "%slt%"=="6" goto bootSequenceAddFirst
 if "%slt%"=="7" goto modify
 if "%slt%"=="8" goto addNew
 if "%slt%"=="9" goto editMultiValues
+if "%slt%"=="737" goto quickSetdevice
 if "%slt%"=="223" goto global
 if "%slt%"=="244" goto defineBCDStore1
 if "%slt%"=="738" goto settings
@@ -248,7 +250,7 @@ echo.
 
 :scan1
 set /a num+=1
-if exist "%temp%\9826\BCDMast\items\item%num%.txt" (
+if exist "%temp%\9826\BCDFixer\items\item%num%.txt" (
     rem scan1这是一个循环，上一行是检测是否需要跳出。而scanElse在全部项目扫描完毕后执行。
     set /a "numPause=num%%5-1"
     if /i !numPause! EQU 0 (
@@ -276,7 +278,7 @@ if "!numSelected!"=="" (cls) else goto defineSelection
 
 rem 在这个循环当中，第一个要显示的属性前加上显示启动项编号，最后一个后加上显示空行。
 rem 这里只显示了两个属性。
-for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%num%.txt") do (
+for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDFixer\items\item%num%.txt") do (
     if %%A==标识符 (
         echo 启动项 %num%
         echo 标识符 %%B
@@ -347,8 +349,8 @@ if "%numSelected%"=="{current}" (
         goto defineBCDStore1
     )
 )
-if exist "%temp%\9826\BCDMast\items\item%numSelected%.txt" (
-    for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
+if exist "%temp%\9826\BCDFixer\items\item%numSelected%.txt" (
+    for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do (
         if %%A==标识符 (
             set currentItemGUID=%%B
         )
@@ -441,7 +443,7 @@ goto convertItems
 :bootSequenceAddFirst
 goto bootSequenceAddFirst1
 rem 没写好呢
-for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
+for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDFixer\items\item0.txt") do (
     if %%A==bootsequence (
         if %%B==%currentItemGUID% echo 下一次启动将先启动此项。
     )
@@ -458,7 +460,7 @@ goto convertItems
 
 :modify
 cls
-for /f "usebackq skip=2 tokens=1" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do @echo %%A
+for /f "usebackq skip=2 tokens=1" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do @echo %%A
 echo.
 echo 以上是当前项目包含的数据名称，区分大小写。
 echo 这里只能编辑单个数据。
@@ -471,7 +473,7 @@ set /p "nameSelected=>"
 if "%nameSelected%"=="" goto mainMenu 
 :editSingleValue
 set isNameSltExist=0
-for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
+for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do (
     if "!nameSelected!"=="%%A" (
         set isBool=0
         if "%%B"=="Yes" set isBool=1
@@ -553,7 +555,7 @@ set nameSelected=
 set /p "nameSelected=>"
 if "%nameSelected%"=="" goto mainMenu
 set isNameSltExist=0
-for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
+for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do (
     if "!nameSelected!"=="%%A" (
         set isNameSltExist=1
     )
@@ -605,6 +607,81 @@ goto mainMenu
 
 
 
+:quickSetdevice
+cls
+echo 本功能目前只设定 device ，不设置 osdevice 。
+for %%A in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist %%A: fsutil fsinfo drivetype %%A:
+echo.
+echo （只输入字母，不输入冒号，如果只能输入数字，那也可输入它在字母表中的序号来表示，例如 D 盘就输入 4， A 盘就输入 1）
+set slt=
+set /p slt=请输入你的选择，然后按 Enter，输入 0 可返回：
+if exist "%slt%:" goto quickSetdevice1
+if "%slt%"=="0" goto mainMenu
+if "%slt%"=="1" set slt=A & goto quickSetdevice1
+if "%slt%"=="2" set slt=B & goto quickSetdevice1
+if "%slt%"=="3" set slt=C & goto quickSetdevice1
+if "%slt%"=="4" set slt=D & goto quickSetdevice1
+if "%slt%"=="5" set slt=E & goto quickSetdevice1
+if "%slt%"=="6" set slt=F & goto quickSetdevice1
+if "%slt%"=="7" set slt=G & goto quickSetdevice1
+if "%slt%"=="8" set slt=H & goto quickSetdevice1
+if "%slt%"=="9" set slt=I & goto quickSetdevice1
+if "%slt%"=="10" set slt=J & goto quickSetdevice1
+if "%slt%"=="11" set slt=K & goto quickSetdevice1
+if "%slt%"=="12" set slt=L & goto quickSetdevice1
+if "%slt%"=="13" set slt=M & goto quickSetdevice1
+if "%slt%"=="14" set slt=N & goto quickSetdevice1
+if "%slt%"=="15" set slt=O & goto quickSetdevice1
+if "%slt%"=="16" set slt=P & goto quickSetdevice1
+if "%slt%"=="17" set slt=Q & goto quickSetdevice1
+if "%slt%"=="18" set slt=R & goto quickSetdevice1
+if "%slt%"=="19" set slt=S & goto quickSetdevice1
+if "%slt%"=="20" set slt=T & goto quickSetdevice1
+if "%slt%"=="21" set slt=U & goto quickSetdevice1
+if "%slt%"=="22" set slt=V & goto quickSetdevice1
+if "%slt%"=="23" set slt=W & goto quickSetdevice1
+if "%slt%"=="24" set slt=X & goto quickSetdevice1
+if "%slt%"=="25" set slt=Y & goto quickSetdevice1
+if "%slt%"=="26" set slt=Z & goto quickSetdevice1
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+goto quickSetdevice
+
+:quickSetdevice1
+cls
+fsutil volume diskfree %slt%:
+echo.
+fsutil volume querylabel %slt%:
+echo.
+if exist %slt%\Windows\nul (echo 在该分区下找到了 Windows 文件夹。) else (echo 该分区下没有 Windows 文件夹。)
+if exist "%slt%\Program Files\nul" (echo 在该分区下找到了 Program Files 文件夹。) else (echo 该分区下没有 Program Files 文件夹。)
+if exist %slt%\Users\nul (echo 在该分区下找到了 Users 文件夹。) else (echo 该分区下没有 Users 文件夹。)
+echo.
+echo 请确认这就是你要选择的盘符？
+echo.
+echo [1] 是的，我是说，真的    [0] 不，这不是，我要重选
+set device=%slt%
+set slt=
+set /p slt=请输入你的选择，然后按 Enter：
+if "%slt%"=="1" goto quickSetdevice2
+if "%slt%"=="0" goto quickSetdevice
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+goto quickSetdevice1
+
+:quickSetdevice2
+bcdedit %store% /set %currentItemGUID% device partition=%device%:
+echo.
+if ERRORLEVEL 1 echo 发生了错误。 & echo.
+pause
+set modifiedData=1
+set menu=mainMenu
+goto convertItems
+
 
 
 :global
@@ -629,7 +706,7 @@ if "%slt%"=="1" goto timeout
 if "%slt%"=="2" (
     set numSelected=0
     set currentItemGUID={bootmgr}
-    for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDMast\items\item0.txt") do (
+    for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDFixer\items\item0.txt") do (
         if %%A==标识符 set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
         if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
     )
@@ -666,7 +743,7 @@ goto globalMainMenu
 :changeBool
 cls
 set bool=未指定
-for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDMast\items\item%numSelected%.txt") do (
+for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do (
     if %%A==%boolName% set bool=%%B
 )
 echo 当前选定的启动项目：   %currentItemDescription%
@@ -867,8 +944,8 @@ if "%BCDVolume%"=="" (goto defineFirmwareType) else (
 )
 
 :end
-del /q "%temp%\9826\BCDMast\items\*.txt">nul
-rd /s /q "%temp%\9826\BCDMast\items">nul
+del /q "%temp%\9826\BCDFixer\items\*.txt">nul
+rd /s /q "%temp%\9826\BCDFixer\items">nul
 if defined letter (
     echo select disk %disk% >%temp%\BCDFixerDiskPartScriptTemp.txt
     echo select partition %partition% >>%temp%\BCDFixerDiskPartScriptTemp.txt
