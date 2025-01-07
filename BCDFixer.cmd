@@ -72,9 +72,10 @@ if not "%~1"=="" (
 ) else rem
 :defineBCDStore1
 cls
-echo 请先设置你要修改哪个BCD文件。
-echo 如果为空，那么将使用当前系统BCD。
-echo 如需新建一个BCD文件，请输入new。
+echo 请先设置你要修改哪个 BCD 文件。
+echo 如果为空，那么将使用当前系统 BCD。
+echo 如需新建一个 BCD 文件，请输入 new。
+echo 如果你的 EFI ESP 分区没有盘符，你可以输入 334377 ，本程序会让你挑选分区，然后自动选中 BCD 文件。
 echo.
 echo 温馨提示：当你来到这里时已经是管理员身份，通常不能拖拽文件。
 echo.
@@ -82,6 +83,7 @@ echo 在下方输入路径。无需手动添加双引号，但不能有空格。
 echo.
 set store=
 set /p "store=>"
+if "%store%"=="334377" goto assignNow
 if "%store%"=="new" goto newBCDStore
 :defineBCDStore2
 if "%store%"=="" (
@@ -102,15 +104,63 @@ if "%store%"=="" (
         set store=/store "%store:"=%"
     )
 )
+goto convertItems
+
+:assignNow
+echo list disk>%temp%\BCDFixerDiskPartScriptTemp.txt
+echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
+diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
+echo.
+set /p disk=请输入要选择的硬盘编号：
+cls
+echo select disk %disk% >%temp%\BCDFixerDiskPartScriptTemp.txt
+echo list partition>>%temp%\BCDFixerDiskPartScriptTemp.txt
+echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
+diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
+echo.
+set /p partition=请输入要选择的分区编号：
+echo select disk %disk% >%temp%\BCDFixerDiskPartScriptTemp.txt
+echo select partition %partition% >>%temp%\BCDFixerDiskPartScriptTemp.txt
+for %%A in (Z Y X W V U T S R Q P O M N L K J I H G F E D C B A) do if not exist %%A: (
+	set letter=%%A
+	goto assignNow_pickLetterBreak
+)
+:assignNow_pickLetterBreak
+echo assign letter='%letter%'>>%temp%\BCDFixerDiskPartScriptTemp.txt
+echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
+diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
+echo.
+pause
+bcdedit /store %letter%:\EFI\Microsoft\Boot\BCD >nul
+if errorlevel 1 (
+    echo 为你指定的分区分配了盘符 %letter%:
+    echo 但是尝试读取 %letter%:\EFI\Microsoft\Boot\BCD 时出错。
+    echo 接下来本程序将尝试读取 %letter%:\Boot\BCD。
+) else (
+    set store=/store "%letter%:\EFI\Microsoft\Boot\BCD"
+    goto convertItems
+)
+bcdedit /store %letter%:\boot\bcd>nul
+if errorlevel 1 (
+    echo 读取 %letter%:\Boot\BCD 也失败了。
+    echo 请重新尝试换一个分区或路径。
+    echo.
+    pause
+    goto defineBCDStore1
+) else (
+    set store=/store "%letter%:\Boot\BCD"
+    goto convertItems
+)
+
+goto convertItems
+
+:convertItems
 cls
 set copied=0
 set modifiedData=1
 set modifiedOrder=1
 set numSelected=-1
 set menu=mainMenu
-goto convertItems
-
-:convertItems
 if %modifiedOrder%==1 (
     set currentItemGUID=未指定
     set currentItemDescription=未指定
@@ -199,7 +249,7 @@ echo.
 :scan1
 set /a num+=1
 if exist "%temp%\9826\BCDMast\items\item%num%.txt" (
-    rem scan1这是一个循环，上一行是检测是否需要跳出。而scan2在全部项目扫描完毕后执行。
+    rem scan1这是一个循环，上一行是检测是否需要跳出。而scanElse在全部项目扫描完毕后执行。
     set /a "numPause=num%%5-1"
     if /i !numPause! EQU 0 (
         if /i %num% NEQ 1 (
@@ -238,7 +288,7 @@ for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDMast\items\item%num%.txt")
 )
 goto scan1
 
-:scan2
+:scanElse
 
 :defineSelection
 goto newC1
@@ -819,6 +869,13 @@ if "%BCDVolume%"=="" (goto defineFirmwareType) else (
 :end
 del /q "%temp%\9826\BCDMast\items\*.txt">nul
 rd /s /q "%temp%\9826\BCDMast\items">nul
+if defined letter (
+    echo select disk %disk% >%temp%\BCDFixerDiskPartScriptTemp.txt
+    echo select partition %partition% >>%temp%\BCDFixerDiskPartScriptTemp.txt
+    echo remove>>%temp%\BCDFixerDiskPartScriptTemp.txt
+    echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
+    diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
+)
 endlocal
 endlocal
 rem pause
