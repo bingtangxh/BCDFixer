@@ -104,9 +104,15 @@ if "%store%"=="" (
         set store=/store "%store:"=%"
     )
 )
+set copied=0
+set modifiedData=1
+set modifiedOrder=1
+set numSelected=-1
+set menu=mainMenu
 goto convertItems
 
 :assignNow
+cls
 echo list disk>%temp%\BCDFixerDiskPartScriptTemp.txt
 echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
 diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
@@ -119,6 +125,7 @@ echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
 diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
 echo.
 set /p partition=请输入要选择的分区编号：
+cls
 echo select disk %disk% >%temp%\BCDFixerDiskPartScriptTemp.txt
 echo select partition %partition% >>%temp%\BCDFixerDiskPartScriptTemp.txt
 for %%A in (Z Y X W V U T S R Q P O M N L K J I H G F E D C B A) do if not exist %%A: (
@@ -131,6 +138,7 @@ echo exit>>%temp%\BCDFixerDiskPartScriptTemp.txt
 diskpart /s %temp%\BCDFixerDiskPartScriptTemp.txt
 echo.
 pause
+cls
 bcdedit /store %letter%:\EFI\Microsoft\Boot\BCD >nul
 if errorlevel 1 (
     echo 为你指定的分区分配了盘符 %letter%:
@@ -151,16 +159,15 @@ if errorlevel 1 (
     set store=/store "%letter%:\Boot\BCD"
     goto convertItems
 )
-
-goto convertItems
-
-:convertItems
-cls
 set copied=0
 set modifiedData=1
 set modifiedOrder=1
 set numSelected=-1
 set menu=mainMenu
+goto convertItems
+
+:convertItems
+cls
 if %modifiedOrder%==1 (
     set currentItemGUID=未指定
     set currentItemDescription=未指定
@@ -173,7 +180,7 @@ set num=-1
 set A=
 for /f "usebackq tokens=1,2 delims=" %%A in (`bcdedit %store% /enum ACTIVE /v`) do (
     set A=%%A
-    if "!A:~0,7!"=="Windows" set /a num+=1
+    if "!A:~0,11!"=="-----------" set /a num+=1
     echo %%A>>"%temp%\9826\BCDFixer\items\item!num!.txt"
 )
 if %copied%==1 (
@@ -208,8 +215,9 @@ if not %numSelected%==-1 echo [5]        将当前启动项目设置为默认
 if not %numSelected%==-1 echo [6]        将当前启动项目设置为下次第一个启动
 if not %numSelected%==-1 echo [7]        修改或删除一个单项条目的数据
 if not %numSelected%==-1 echo [8]        添加一个单项条目的数据
-rem if not %numSelected%==-1 echo [9]        编辑多个条目的数据（例如启动顺序）
-if not %numSelected%==-1 echo [737]      快速指定启动分区为一个盘符【不支持 Ramdisk 或 VHD(X)中的系统】
+if not %numSelected%==-1 echo [9]        编辑多个条目的数据（例如启动顺序）
+if not %numSelected%==-1 echo [737]      快速指定启动分区为一个盘符
+if not %numSelected%==-1 echo                  【不支持 Ramdisk 或 VHD(X)中的系统】
 echo ----------------------------------------
 echo [223]      更改BCD全局设定
 echo [244]      切换另一个BCD文件
@@ -291,7 +299,7 @@ for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDFixer\items\item%num%.txt"
 goto scan1
 
 :scanElse
-
+rem 这里就是两个标签行指向同一脚本块
 :defineSelection
 goto newC1
 rem 该代码块大抵是废弃了
@@ -314,7 +322,7 @@ rem 该代码块大抵是废弃了
 :newC1
 if "%numSelected%"=="{current}" (
     if "%store%"=="" (
-        echo. & echo 该特性尚未完工，无法确定接下来的行为。 & echo. & pause
+        rem echo. & echo 该特性尚未完工，无法确定接下来的行为。 & echo. & pause
         for /f "usebackq tokens=1-10" %%A in (`bcdedit /enum {current}`) do (
             if %%A==description set currentItemDescription=%%B %%C %%D %%E %%F %%G %%H %%I %%J
         )
@@ -323,7 +331,7 @@ if "%numSelected%"=="{current}" (
         set A=
         for /f "usebackq tokens=1,2" %%A in (`bcdedit %store% /enum ACTIVE`) do (
             set A=%%A
-            if "!A:~0,7!"=="Windows" set /a num+=1
+            if "!A:~0,11!"=="-----------" set /a num+=1
             if %%A==标识符 (
                 if %%B=={current} set numSelected=!num!
             )
@@ -332,7 +340,7 @@ if "%numSelected%"=="{current}" (
         set A=
         for /f "usebackq tokens=1,2" %%A in (`bcdedit %store% /enum ACTIVE /v`) do (
             set A=%%A
-            if "!A:~0,7!"=="Windows" set /a num+=1
+            if "!A:~0,11!"=="-----------" set /a num+=1
             if %%A==标识符 (
                 if /i !numSelected! EQU !num! (
                     set currentItemGUID=%%B
@@ -384,7 +392,7 @@ echo.
 echo 请输入新启动项目的描述，无需输入双引号。
 echo 如留空则不复制并返回。
 echo.
-echo 输入完毕后按Enter。
+echo 输入完毕后按 Enter。
 echo.
 set slt=
 set /p "slt=>"
@@ -471,6 +479,7 @@ echo.
 set nameSelected=
 set /p "nameSelected=>"
 if "%nameSelected%"=="" goto mainMenu 
+if "%nameSelected%"=="path" goto setPath
 :editSingleValue
 set isNameSltExist=0
 for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do (
@@ -528,13 +537,19 @@ if %isNameSltExist%==0 (
 echo.
 echo 请输入新的数据。如果留空，则会删除这项数据。
 echo.
+echo 请直接在这里输入数据，禁止在此处输入任何双引号。
+echo 如果你设置的数据需要双引号括起来（例如 description），那么就在结尾多输入一个空格。
+echo 这样，本程序会自动去掉结尾的第一个空格，然后自动加上首尾的双引号。
+echo.
 set data=
 set /p "data=>"
 echo.
 if "%data%"=="" (
     bcdedit %store% /deletevalue %currentItemGUID% %nameSelected%
 ) else (
-    bcdedit %store% /set %currentItemGUID% %nameSelected% %data%
+    if /i "%nameSelected%"=="description" set currentItemDescription=%data:~0,-1%
+    if "%data:~-1%"==" " set data="%data:~0,-1%"
+    bcdedit %store% /set %currentItemGUID% %nameSelected% !data!
 )
 if ERRORLEVEL 1 echo 发生了错误。
 echo.
@@ -554,6 +569,7 @@ echo.
 set nameSelected=
 set /p "nameSelected=>"
 if "%nameSelected%"=="" goto mainMenu
+if "%nameSelected%"=="path" goto setPath
 set isNameSltExist=0
 for /f "usebackq skip=2 tokens=1,2,3,4,5,6,7,8,9,10" %%A in ("%temp%\9826\BCDFixer\items\item%numSelected%.txt") do (
     if "!nameSelected!"=="%%A" (
@@ -586,8 +602,14 @@ echo 当前选定的数据名称：   %nameSelected%
 echo.
 echo 请输入数据，然后按Enter。
 echo.
+echo 请直接在这里输入数据，禁止在此处输入任何双引号。
+echo 如果你设置的数据需要双引号括起来（例如 description），那么就在结尾多输入一个空格。
+echo 这样，本程序会自动去掉结尾的第一个空格，然后自动加上首尾的双引号。
+echo.
 set /p "data=>"
 echo.
+if /i "%nameSelected%"=="description" set currentItemDescription=%data%
+if "%data:~-1%"==" " set data="%data:~0,-1%"
 bcdedit %store% /set %currentItemGUID% %nameSelected% %data%
 if ERRORLEVEL 1 echo 发生了错误。
 echo.
@@ -596,16 +618,104 @@ set modifiedData=1
 set menu=mainMenu
 goto convertItems
 
-:editMultiValues
+:setPath
+cls
+echo 你将要设置的是路径。
+echo 你可以在下方选择一个预先给好的路径，也可以输入自己想要的。
 echo.
-echo 前面的区域以后再来探索吧？
+echo [1] \windows\system32\winload.efi
+echo [2] \windows\system32\winload.exe
+echo [3] \windows\system32\boot\winload.efi
+echo [4] \windows\system32\boot\winload.exe
+echo [5] \windows\system32\winresume.efi
+echo [6] \EFI\Microsoft\Boot\bootmgfw.efi
+echo [7] \EFI\Microsoft\Boot\memtest.efi
+echo [0] 上面都不是我要的，我要自定义
+echo.
+set slt=
+set /p slt=请输入你的选择，然后按 Enter，留空可返回：
+if "%slt%"=="" goto mainMenu
+if "%slt%"=="1" bcdedit %store% /set %currentItemGUID% path \windows\system32\winload.efi & goto setPathFinish
+if "%slt%"=="2" bcdedit %store% /set %currentItemGUID% path \windows\system32\winload.exe & goto setPathFinish
+if "%slt%"=="3" bcdedit %store% /set %currentItemGUID% path \windows\system32\boot\winload.efi & goto setPathFinish
+if "%slt%"=="4" bcdedit %store% /set %currentItemGUID% path \windows\system32\boot\winload.exe & goto setPathFinish
+if "%slt%"=="5" bcdedit %store% /set %currentItemGUID% path \windows\system32\winresume.efi & goto setPathFinish
+if "%slt%"=="6" bcdedit %store% /set %currentItemGUID% path \EFI\Microsoft\Boot\bootmgfw.efi & goto setPathFinish
+if "%slt%"=="7" bcdedit %store% /set %currentItemGUID% path \EFI\Microsoft\Boot\memtest.efi & goto setPathFinish
+if "%slt%"=="0" goto customPath 
+echo.
+echo 你的输入有误，请重新输入。
 echo.
 pause
-goto mainMenu
+goto setPath
 
+:customPath
+cls
+echo 请输入你的路径，留空可返回。此处不检测是否有效。
+echo.
+set data=
+set /p "data=>"
+if "%data%"=="" goto setPath
+bcdedit %store% /set %currentItemGUID% path %path%
+goto setPathFinish
 
+:setPathFinish
+if errorlevel 1 echo. & echo 发生了错误。
+echo.
+pause
+set modifiedData=1
+goto convertItems
 
+:editMultiValues
+cls
+echo 当前指定的数值名称为：%nameSelected%
+echo.
+echo 请指定你要修改的数值名称是什么，如果留空则使用上面显示的。
+echo 输入完毕后按 Enter。
+set /p "nameSelected=>"
+:editMultiValues1
+cls
+bcdedit /enum %currentItemGUID%
+echo.
+echo 请确认你要修改的数值。
+echo.
+pause
+cls
+echo 请在下方输入你要添加或删除的数值，然后后面紧跟一个数字：
+echo [1] 添加到开头    [2] 添加到结尾    [3] 删除这个数值
+echo.
+echo 例如：删除 {current} ，就输入 {current}3 ，不用空格隔开。
+echo 输入完毕后按 Enter ，留空可返回主菜单。
+echo.
+set data=
+set /p "data=>"
+if "%data%"=="" goto mainMenu
+if "%data:~-1%"=="1" set data=%data:~-1% /addfirst
+if "%data:~-1%"=="2" set data=%data:~-1% /addlast
+if "%data:~-1%"=="3" set data=%data:~-1% /remove
+cls
+set modifiedData=1
+bcdedit %store% /set %currentItemGUID% %nameSelected% %data%
+if errorlevel 1 echo. & echo 发生了错误。
+goto editMultiValuesFinish
 
+:editMultiValuesFinish
+echo.
+echo 是否需要继续编辑？
+echo.
+echo [1] 继续编辑 %nameSelected%
+echo [0] 返回主菜单
+echo.
+set slt=
+set /p slt=请输入你的选择，然后按 Enter：
+if "%slt%"=="1" goto editMultiValues1
+if "%slt%"=="0" goto convertItems
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+cls
+goto editMultiValuesFinish
 
 :quickSetdevice
 cls
