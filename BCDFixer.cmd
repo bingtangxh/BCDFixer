@@ -9,8 +9,8 @@ cls
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
 if not exist "%temp%\9826\BCDFixer\items" (mkdir "%temp%\9826\BCDFixer\items") else rem
 title BCDFixer 0.6
-mode con cols=70 lines=30
-echo 由冰糖xh制作
+mode con cols=70 lines=50
+echo 由 冰糖xh 制作
 echo.
 cls
 
@@ -18,7 +18,7 @@ cls
 
 bcdedit>nul
 if not ERRORLEVEL 1 (goto selfCheck2) else rem
-echo 获取当前BCD内容发生错误，可能是没有管理员身份运行。
+echo 获取当前 BCD 内容发生错误，可能是没有管理员身份运行。
 echo.
 echo 本程序将尝试以管理员身份重启。
 if not "%~1"=="" (
@@ -28,7 +28,7 @@ if not "%~1"=="" (
     echo.
     echo argv[1]==%1
     echo.
-    echo 如果进入主菜单后，发现显示的BCD路径不正确，那么请自行以管理员身份运行。
+    echo 如果进入主菜单后，发现显示的 BCD 路径不正确，那么请自行以管理员身份运行。
     pause
 ) else echo.
 ver|findstr "[3-5]\.[0-9]\.[0-9]*" 1>nul 2>nul && goto st
@@ -74,7 +74,7 @@ if not "%~1"=="" (
 cls
 echo 请先设置你要修改哪个 BCD 文件。
 echo 如果为空，那么将使用当前系统 BCD。
-echo 如需新建一个 BCD 文件，请输入 639。
+echo 如需新建一个 BCD 文件，请输入 639 。
 echo 如果你的 EFI ESP 分区没有盘符，你可以输入 334377 ，不用空格隔开。
 echo 本程序会让你挑选分区，然后自动选中 BCD 文件。
 echo.
@@ -193,10 +193,10 @@ if %copied%==1 (
 :mainMenu
 set The operation completed successfully.=原来是用这种方式来解决的吗？太厉害了！
 cls
-echo                     BCD Fixer主菜单
+echo                     BCD Fixer 主菜单
 echo.
 if "%store%"=="" (
-    echo 当前选定的存储：       此系统的BCD
+    echo 当前选定的存储：       此系统的 BCD
 ) else (
     echo 当前选定的存储：       %store:/store =%
 )
@@ -209,7 +209,7 @@ for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDFixer\items\item0.txt") do 
 )
 echo.
 echo [1]        选取一个启动项目
-rem echo [2]        新建一个启动项目
+echo [2]        新建一个启动项目（未实现）
 if not %numSelected%==-1 echo [3]        复制当前启动项目
 if not %numSelected%==-1 echo [4]        删除当前启动项目
 if not %numSelected%==-1 echo [5]        将当前启动项目设置为默认
@@ -218,11 +218,11 @@ if not %numSelected%==-1 echo [7]        修改或删除一个单项条目的数据
 if not %numSelected%==-1 echo [8]        添加一个单项条目的数据
 if not %numSelected%==-1 echo [9]        编辑多个条目的数据（例如启动顺序）
 if not %numSelected%==-1 echo [737]      快速指定启动分区为一个盘符
-if not %numSelected%==-1 echo                  【不支持 Ramdisk 或 VHD(X)中的系统】
+if not %numSelected%==-1 echo                  【不支持 Ramdisk 或 VHD(X) 中的系统】
 echo ----------------------------------------
-echo [223]      更改BCD全局设定
-echo [244]      切换另一个BCD文件
+echo [223]      更改 BCD 全局设定
 echo [738]      更改本程序全局设定
+echo [244]      切换另一个 BCD 文件
 echo [0]        退出
 echo.
 echo 输入你选择的编号，然后按下Enter。
@@ -802,7 +802,7 @@ goto convertItems
 :global
 :globalMainMenu
 cls
-echo                     更改BCD全局设定
+echo                     更改 BCD 全局设定
 echo.
 if "%store%"=="" (echo 当前选定的存储：此系统的BCD) else (echo 当前选定的存储：%store:/store =%)
 echo.
@@ -843,7 +843,7 @@ set timeout=未指定
 for /f "tokens=1,2" %%A in ('bcdedit %store%') do (
     if %%A==timeout set timeout=%%B
 )
-echo 当前菜单时长：%timeout%秒，暂时不确定该值为0的效果。
+echo 当前菜单时长： %timeout% 秒，暂时不确定该值为0的效果。
 echo.
 echo 请输入新的数值，只能是自然数。留空则保持不变。
 echo.
@@ -891,7 +891,7 @@ goto convertItems
 
 :currentExport
 cls
-echo 你将要导出当前系统BCD。
+echo 你将要导出当前系统 BCD 。
 echo 请输入目标文件路径，无需添加双引号。此处不检测路径是否有效。
 echo 输入..可返回。
 set slt=
@@ -906,9 +906,9 @@ pause
 goto globalMainMenu
 :currentImport
 cls
-echo 你将要从外部导入并替换当前系统BCD。
-echo 本程序会使用/clean参数。
-echo 在EFI启动的系统上，这个参数会删除所有的现有固件启动项。
+echo 你将要从外部导入并替换当前系统 BCD 。
+echo 本程序会使用 /clean 参数。
+echo 在 EFI 启动的系统上，这个参数会删除所有的现有固件启动项。
 echo.
 echo 请输入要导入的文件路径，无需输入双引号。
 echo 输入..可返回。
@@ -962,7 +962,7 @@ goto settingsMainMenu
 :changeColor
 if not exist "%AppData%\9826" mkdir "%AppData%\9826"
 cls
-echo 如果使用Windows 终端且设置了背景图片，那么建议使用不带底色的配色。
+echo 如果使用 Windows 终端且设置了背景图片，那么建议使用不带底色的配色。
 echo.
 echo 选择你要的颜色，字母不区分大小写。
 echo.
@@ -996,10 +996,11 @@ goto changeColor
 
 :defineWindowsPath
 cls
-echo 你选择了新建一个BCD文件。
-echo 本程序目前仅支持使用BCDBOOT命令，所以Win7及以下系统需要手动补齐bcdboot.exe。
-echo BCDBOOT指令只能指定将BCD放置于哪一个盘符，并不能自定义路径。
-echo 现在，请先输入Windows系统所在的文件夹。例如C:\Windows。
+echo 你选择了新建一个 BCD 文件。
+echo 本程序目前仅支持使用 BCDBOOT 命令，
+echo 所以 Win7 及以下系统需要手动补齐 bcdboot.exe 。
+echo BCDBOOT 指令只能指定将 BCD 放置于哪一个盘符，并不能自定义路径。
+echo 现在，请先输入 Windows 系统所在的文件夹。例如 C:\Windows 。
 echo 不允许含有空格，无需添加双引号。
 echo 留空可返回。
 echo.
@@ -1017,11 +1018,11 @@ if "%windowsPath%"=="" (goto defineBCDStore1) else (
 
 :defineFirmwareType
 cls
-echo 请选择该BCD是用于BIOS还是UEFI启动。
+echo 请选择该 BCD 是用于 BIOS 还是 UEFI 启动。
 echo.
-echo [1] BIOS   [2]UEFI     [0]让BCDBOOT自行决定
+echo [1] BIOS   [2] UEFI     [0]让 BCDBOOT 自行决定
 echo.
-echo 输入你选择的编号，然后按下Enter。留空可返回。
+echo 输入你选择的编号，然后按下 Enter 。留空可返回。
 echo.
 set firmwareTypeSlt=
 set /p "firmwareTypeSlt=>"
@@ -1037,9 +1038,9 @@ goto defineFirmwareType
 
 :defineBCDVolume
 cls
-echo 请输入要存放BCD的盘符。
+echo 请输入要存放 BCD 的盘符。
 echo 这里只需要输入一个字母即可，不要输入冒号。
-echo BCDBOOT会根据你选择的固件类型放置于启动管理器会寻找的文件夹。
+echo BCDBOOT 会根据你选择的固件类型放置于启动管理器会寻找的文件夹。
 echo 留空可返回。
 echo.
 set BCDVolume=
