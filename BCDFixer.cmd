@@ -727,32 +727,32 @@ set slt=
 set /p slt=请输入你的选择，然后按 Enter，输入 0 可返回：
 if exist "%slt%:" goto quickSetdevice1
 if "%slt%"=="0" goto mainMenu
-if "%slt%"=="1" set slt=A & goto quickSetdevice1
-if "%slt%"=="2" set slt=B & goto quickSetdevice1
-if "%slt%"=="3" set slt=C & goto quickSetdevice1
-if "%slt%"=="4" set slt=D & goto quickSetdevice1
-if "%slt%"=="5" set slt=E & goto quickSetdevice1
-if "%slt%"=="6" set slt=F & goto quickSetdevice1
-if "%slt%"=="7" set slt=G & goto quickSetdevice1
-if "%slt%"=="8" set slt=H & goto quickSetdevice1
-if "%slt%"=="9" set slt=I & goto quickSetdevice1
-if "%slt%"=="10" set slt=J & goto quickSetdevice1
-if "%slt%"=="11" set slt=K & goto quickSetdevice1
-if "%slt%"=="12" set slt=L & goto quickSetdevice1
-if "%slt%"=="13" set slt=M & goto quickSetdevice1
-if "%slt%"=="14" set slt=N & goto quickSetdevice1
-if "%slt%"=="15" set slt=O & goto quickSetdevice1
-if "%slt%"=="16" set slt=P & goto quickSetdevice1
-if "%slt%"=="17" set slt=Q & goto quickSetdevice1
-if "%slt%"=="18" set slt=R & goto quickSetdevice1
-if "%slt%"=="19" set slt=S & goto quickSetdevice1
-if "%slt%"=="20" set slt=T & goto quickSetdevice1
-if "%slt%"=="21" set slt=U & goto quickSetdevice1
-if "%slt%"=="22" set slt=V & goto quickSetdevice1
-if "%slt%"=="23" set slt=W & goto quickSetdevice1
-if "%slt%"=="24" set slt=X & goto quickSetdevice1
-if "%slt%"=="25" set slt=Y & goto quickSetdevice1
-if "%slt%"=="26" set slt=Z & goto quickSetdevice1
+if "%slt%"=="1" set slt=A& goto quickSetdevice1
+if "%slt%"=="2" set slt=B& goto quickSetdevice1
+if "%slt%"=="3" set slt=C& goto quickSetdevice1
+if "%slt%"=="4" set slt=D& goto quickSetdevice1
+if "%slt%"=="5" set slt=E& goto quickSetdevice1
+if "%slt%"=="6" set slt=F& goto quickSetdevice1
+if "%slt%"=="7" set slt=G& goto quickSetdevice1
+if "%slt%"=="8" set slt=H& goto quickSetdevice1
+if "%slt%"=="9" set slt=I& goto quickSetdevice1
+if "%slt%"=="10" set slt=J& goto quickSetdevice1
+if "%slt%"=="11" set slt=K& goto quickSetdevice1
+if "%slt%"=="12" set slt=L& goto quickSetdevice1
+if "%slt%"=="13" set slt=M& goto quickSetdevice1
+if "%slt%"=="14" set slt=N& goto quickSetdevice1
+if "%slt%"=="15" set slt=O& goto quickSetdevice1
+if "%slt%"=="16" set slt=P& goto quickSetdevice1
+if "%slt%"=="17" set slt=Q& goto quickSetdevice1
+if "%slt%"=="18" set slt=R& goto quickSetdevice1
+if "%slt%"=="19" set slt=S& goto quickSetdevice1
+if "%slt%"=="20" set slt=T& goto quickSetdevice1
+if "%slt%"=="21" set slt=U& goto quickSetdevice1
+if "%slt%"=="22" set slt=V& goto quickSetdevice1
+if "%slt%"=="23" set slt=W& goto quickSetdevice1
+if "%slt%"=="24" set slt=X& goto quickSetdevice1
+if "%slt%"=="25" set slt=Y& goto quickSetdevice1
+if "%slt%"=="26" set slt=Z& goto quickSetdevice1
 echo.
 echo 你的输入有误，请重新输入。
 echo.
@@ -765,13 +765,14 @@ fsutil volume diskfree %slt%:
 echo.
 fsutil volume querylabel %slt%:
 echo.
-if exist %slt%\Windows\nul (echo 在该分区下找到了 Windows 文件夹。) else (echo 该分区下没有 Windows 文件夹。)
-if exist "%slt%\Program Files\nul" (echo 在该分区下找到了 Program Files 文件夹。) else (echo 该分区下没有 Program Files 文件夹。)
-if exist %slt%\Users\nul (echo 在该分区下找到了 Users 文件夹。) else (echo 该分区下没有 Users 文件夹。)
+if exist %slt%:\Windows\nul (echo 在该分区下找到了 Windows 文件夹。) else (echo 该分区下没有 Windows 文件夹。)
+rem if exist "%slt%:\Program Files\nul" (echo 在该分区下找到了 Program Files 文件夹。) else (echo 该分区下没有 Program Files 文件夹。)
+if exist %slt%:\Users\nul (echo 在该分区下找到了 Users 文件夹。) else (echo 该分区下没有 Users 文件夹。)
 echo.
 echo 请确认这就是你要选择的盘符？
 echo.
 echo [1] 是的，我是说，真的    [0] 不，这不是，我要重选
+echo.
 set device=%slt%
 set slt=
 set /p slt=请输入你的选择，然后按 Enter：
@@ -948,7 +949,8 @@ pause
 goto settingsMainMenu
 
 :contextMenuManage
-echo 该功能尚未完工。
+echo.
+echo 前面的区域以后再来探索吧？
 echo.
 pause
 goto settingsMainMenu
