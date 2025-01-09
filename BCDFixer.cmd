@@ -141,6 +141,15 @@ echo.
 pause
 cls
 bcdedit /store %letter%:\EFI\Microsoft\Boot\BCD >nul
+
+set copied=0
+set modifiedData=1
+set modifiedOrder=1
+set numSelected=-1
+set menu=mainMenu
+
+rem 我真是服了，这就是只有 goto 的弊端，脑子要炸了
+
 if errorlevel 1 (
     echo 为你指定的分区分配了盘符 %letter%:
     echo 但是尝试读取 %letter%:\EFI\Microsoft\Boot\BCD 时出错。
@@ -160,11 +169,6 @@ if errorlevel 1 (
     set store=/store "%letter%:\Boot\BCD"
     goto convertItems
 )
-set copied=0
-set modifiedData=1
-set modifiedOrder=1
-set numSelected=-1
-set menu=mainMenu
 goto convertItems
 
 :convertItems
