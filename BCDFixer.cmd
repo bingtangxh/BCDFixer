@@ -74,8 +74,9 @@ if not "%~1"=="" (
 cls
 echo 请先设置你要修改哪个 BCD 文件。
 echo 如果为空，那么将使用当前系统 BCD。
-echo 如需新建一个 BCD 文件，请输入 new。
-echo 如果你的 EFI ESP 分区没有盘符，你可以输入 334377 ，本程序会让你挑选分区，然后自动选中 BCD 文件。
+echo 如需新建一个 BCD 文件，请输入 639。
+echo 如果你的 EFI ESP 分区没有盘符，你可以输入 334377 ，不用空格隔开。
+echo 本程序会让你挑选分区，然后自动选中 BCD 文件。
 echo.
 echo 温馨提示：当你来到这里时已经是管理员身份，通常不能拖拽文件。
 echo.
@@ -84,7 +85,7 @@ echo.
 set store=
 set /p "store=>"
 if "%store%"=="334377" goto assignNow
-if "%store%"=="new" goto newBCDStore
+if "%store%"=="639" goto newBCDStore
 :defineBCDStore2
 if "%store%"=="" (
     if not "%store%"=="" set store=/store "%store:"=%"
@@ -288,8 +289,11 @@ rem 在这个循环当中，第一个要显示的属性前加上显示启动项编号，最后一个后加上显示空
 rem 这里只显示了两个属性。
 for /f "usebackq tokens=1-10" %%A in ("%temp%\9826\BCDFixer\items\item%num%.txt") do (
     if %%A==标识符 (
-        echo 启动项 %num%
-        echo 标识符 %%B
+        echo 启动项   %num%
+        echo 标识符   %%B
+    )
+    if %%A==device (
+        echo 设备     %%B
     )
     if %%A==description (
         echo 项目描述 %%B %%C %%D %%E %%F %%G %%H %%I %%J
