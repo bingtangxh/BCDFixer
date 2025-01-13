@@ -905,7 +905,7 @@ echo.
 set slt=
 set /p "slt=>"
 if "%slt%"=="1" goto setVhdx4
-if "%slt%"=="2" goto setVhdx1
+if "%slt%"=="2" goto setVhdx
 if "%slt%"=="3" goto setVhdx2
 echo.
 echo 你的输入有误，请重新输入。
