@@ -213,7 +213,7 @@ for /f "usebackq tokens=1,2" %%A in ("%temp%\9826\BCDFixer\items\item0.txt") do 
 )
 echo.
 echo [1]        选取一个启动项目
-echo [2]        新建一个启动项目（未实现）
+rem echo [2]        新建一个启动项目（未实现）
 if not %numSelected%==-1 echo [3]        复制当前启动项目
 if not %numSelected%==-1 echo [4]        删除当前启动项目
 if not %numSelected%==-1 echo [5]        将当前启动项目设置为默认
@@ -222,7 +222,7 @@ if not %numSelected%==-1 echo [7]        修改或删除一个单项条目的数据
 if not %numSelected%==-1 echo [8]        添加一个单项条目的数据
 if not %numSelected%==-1 echo [9]        编辑多个条目的数据（例如启动顺序）
 if not %numSelected%==-1 echo [737]      快速指定启动分区为一个盘符
-if not %numSelected%==-1 echo                  【不支持 Ramdisk 或 VHD(X) 中的系统】
+if not %numSelected%==-1 echo                  【不支持 Ramdisk 或具体细分 vhd(x) 中的分区】
 echo ----------------------------------------
 echo [223]      更改 BCD 全局设定
 echo [738]      更改本程序全局设定
@@ -702,6 +702,7 @@ if "%data:~-1%"=="1" set data=%data:~-1% /addfirst
 if "%data:~-1%"=="2" set data=%data:~-1% /addlast
 if "%data:~-1%"=="3" set data=%data:~-1% /remove
 cls
+rem 比亚迪，明明指定 %data:~1% 就可以去掉第一位，命令帮助愣是不这么说，靠发散思维？
 set modifiedData=1
 bcdedit %store% /set %currentItemGUID% %nameSelected% %data%
 if errorlevel 1 echo. & echo 发生了错误。
@@ -727,12 +728,14 @@ goto editMultiValuesFinish
 
 :quickSetdevice
 cls
-echo 本功能目前只设定 device ，不设置 osdevice 。
+echo.
 for %%A in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist %%A: fsutil fsinfo drivetype %%A:
 echo.
 echo （只输入字母，不输入冒号，如果只能输入数字，那也可输入它在字母表中的序号来表示，例如 D 盘就输入 4， A 盘就输入 1）
+echo 如果需要设置为 vhd(x) 虚拟硬盘，请输入 8439 ，本程序会引导你设置盘符和路径。（不支持指定虚拟硬盘内具体分区）
 set slt=
 set /p slt=请输入你的选择，然后按 Enter，输入 0 可返回：
+if "%slt%"=="8439" goto setVhdx
 if exist "%slt%:" goto quickSetdevice1
 if "%slt%"=="0" goto mainMenu
 if "%slt%"=="1" set slt=A& goto quickSetdevice1
@@ -794,6 +797,7 @@ goto quickSetdevice1
 
 :quickSetdevice2
 bcdedit %store% /set %currentItemGUID% device partition=%device%:
+bcdedit %store% /set %currentItemGUID% osdevice partition=%device%:
 echo.
 if ERRORLEVEL 1 echo 发生了错误。 & echo.
 pause
@@ -801,7 +805,123 @@ set modifiedData=1
 set menu=mainMenu
 goto convertItems
 
+:setVhdx
+cls
+echo.
+for %%A in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do if exist %%A: fsutil fsinfo drivetype %%A:
+echo.
+echo 请在此处输入虚拟硬盘文件所在的盘符。
+echo.
+echo 如果你需要指定的分区没有盘符，但你确信它对应的 \Device\HarddiskVolume* 中 * 的数值，
+echo 你可以将该数值加上 100 再输入。例如，想设置 \Device\HarddiskVolume2 ，就输入 102 。
+echo.
+echo 如果已有盘符，请输入它的盘符或者这个字母在 26 字母中的序号，例如 D: 就输入 D 或 4 。
+echo 如果你实在无法确定，想要让 bootmgr 到时候自动搜索，请输入 locate 或者 562283 。
+echo.
+set slt=
+set /p slt=请输入你的选择，然后按 Enter，输入 0 可返回：
+if "%slt%"=="562283" set vhdHostVolume=locate& goto setVhdx2
+if /i "%slt%"=="locate" set vhdHostVolume=locate& goto setVhdx2
+if exist "%slt%:" goto setVhdx1
+if "%slt%"=="0" goto quickSetdevice
+if "%slt%"=="1" set slt=A& goto setVhdx1
+if "%slt%"=="2" set slt=B& goto setVhdx1
+if "%slt%"=="3" set slt=C& goto setVhdx1
+if "%slt%"=="4" set slt=D& goto setVhdx1
+if "%slt%"=="5" set slt=E& goto setVhdx1
+if "%slt%"=="6" set slt=F& goto setVhdx1
+if "%slt%"=="7" set slt=G& goto setVhdx1
+if "%slt%"=="8" set slt=H& goto setVhdx1
+if "%slt%"=="9" set slt=I& goto setVhdx1
+if "%slt%"=="10" set slt=J& goto setVhdx1
+if "%slt%"=="11" set slt=K& goto setVhdx1
+if "%slt%"=="12" set slt=L& goto setVhdx1
+if "%slt%"=="13" set slt=M& goto setVhdx1
+if "%slt%"=="14" set slt=N& goto setVhdx1
+if "%slt%"=="15" set slt=O& goto setVhdx1
+if "%slt%"=="16" set slt=P& goto setVhdx1
+if "%slt%"=="17" set slt=Q& goto setVhdx1
+if "%slt%"=="18" set slt=R& goto setVhdx1
+if "%slt%"=="19" set slt=S& goto setVhdx1
+if "%slt%"=="20" set slt=T& goto setVhdx1
+if "%slt%"=="21" set slt=U& goto setVhdx1
+if "%slt%"=="22" set slt=V& goto setVhdx1
+if "%slt%"=="23" set slt=W& goto setVhdx1
+if "%slt%"=="24" set slt=X& goto setVhdx1
+if "%slt%"=="25" set slt=Y& goto setVhdx1
+if "%slt%"=="26" set slt=Z& goto setVhdx1
+set /a slt-=100
+if not %slt%==-100 (
+    set vhdHostVolume=\Device\HarddiskVolume%slt%
+    goto setVhdx2
+)
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+goto setVhdx
 
+:setVhdx1
+cls
+fsutil volume diskfree %slt%:
+echo.
+fsutil volume querylabel %slt%:
+echo.
+echo.
+echo 请确认这就是你要选择的盘符？
+echo.
+echo [1] 是的，我是说，真的    [0] 不，这不是，我要重选
+echo.
+set vhdHostVolume=%slt%:
+set slt=
+set /p slt=请输入你的选择，然后按 Enter：
+if "%slt%"=="1" goto setVhdx2
+if "%slt%"=="0" goto setVhdx
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+goto setVhdx1
+
+:setVhdx2
+cls
+echo 请输入虚拟硬盘文件的路径，以反斜杠开头。此处不检测输入是否有效。
+echo 例如：\vhdx\sw8.1.vhdx
+echo 如果留空，那么会使用上一次的数值：%vhdxPath%
+echo.
+set /p "vhdxPath=>"
+goto setVhdx3
+
+:setVhdx3
+cls
+echo vhd=[%vhdHostVolume%]%vhdxPath%
+echo.
+echo 请确认显示的设置数值正确。
+echo.
+echo [1] 确定
+echo [2] 不对，重新设置盘符
+echo [3] 不对，重新设置路径
+echo.
+set slt=
+set /p "slt=>"
+if "%slt%"=="1" goto setVhdx4
+if "%slt%"=="2" goto setVhdx1
+if "%slt%"=="3" goto setVhdx2
+echo.
+echo 你的输入有误，请重新输入。
+echo.
+pause
+goto setVhdx3
+
+:setVhdx4
+bcdedit %store% /set %currentItemGUID% device vhd=[%vhdHostVolume%]%vhdxPath%
+bcdedit %store% /set %currentItemGUID% osdevice vhd=[%vhdHostVolume%]%vhdxPath%
+echo.
+if ERRORLEVEL 1 echo 发生了错误。 & echo.
+pause
+set modifiedData=1
+set menu=mainMenu
+goto convertItems
 
 :global
 :globalMainMenu
