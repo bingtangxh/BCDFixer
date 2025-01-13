@@ -8,7 +8,7 @@ cls
 
 if exist "%AppData%\9826\color.bat" (call "%AppData%\9826\color.bat") else color 0f
 if not exist "%temp%\9826\BCDFixer\items" (mkdir "%temp%\9826\BCDFixer\items") else rem
-title BCDFixer 0.8.1
+title BCDFixer 1.0 Alpha
 mode con cols=70 lines=50
 echo ÓÉ ±ùÌÇxh ÖÆ×÷
 echo.
