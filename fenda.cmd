@@ -42,7 +42,6 @@ choice /c 12
 if errorlevel 2 goto give_up
 if errorlevel 1 goto drink
 
-
 :drink
 cls
 echo 齿轮与基件碰撞，伴随着液体与气体高速混合般的震颤，机器发出一阵如同欢呼的轰鸣。
@@ -100,14 +99,81 @@ echo. & ping -n 4 127.0.0.1>nul 2>nul
 goto end
 
 :NPC.1.4
+echo “枫达专卖机”并没有做错什么，但面对这种个头大大的方形铁皮机器，你似乎想起了枫丹街头巷尾的一句传言——
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo “机器不灵的时候，敲上两下，总会有奇效！”
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 那么机器没有故障的时候，也用力敲上两下，也许会得到某种惊喜？
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 因此，你以恰到好处的力道“殴打”了一番机器。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 没想到，一瓶“经典·枫达居然出现在了专卖机的出货口，似乎与正常使用时没什么区别…”
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo.
+echo ╔════════╤══════════════════╗
+echo ║  [1]   │   畅饮枫达！     ║
+echo ║  [2]   │   还是算了…      ║
+echo ╚════════╧══════════════════╝
+echo.
+choice /c 12
+if errorlevel 2 goto NPC.1.4.2
+if errorlevel 1 goto NPC.1.4.1
 
+:NPC.1.4.1
+echo 你一口喝完瓶中的枫达，确实感受到了枫达独有的甜味，还有短暂的满足感，但似乎有哪里不太对。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 与平时获得的枫达不同，这瓶“经典·枫达”中似乎有着满溢而出的气体，一股刺激感从喉咙直冲头顶。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 明明享用了甜味的饮品，体验却像是喝下了绝云椒椒的冷榨果汁。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 看来，之前的殴打的确起效了，只是这惊喜对于普通饮品的爱好者而言，尚且无法欣赏。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 此时，你似乎想起了某间发条工坊的员工面对棘手的产品时发出的感慨——
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo “居然是一台会生气的机器！”
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+goto end
+
+:NPC.1.4.2
+echo 机器发出一阵轻嗤般的低鸣，像是错过了精彩的好戏，非常不爽。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 不知道为什么，这阵低鸣似乎给了你再次殴打它的正当借口…
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+goto end
 
 :NPC.1.5
-
+echo “枫达专卖机”能有什么烦恼呢？它只需要收钱和交货，钱和货的来源都无需它操心，它的工作异常简单。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 它更不需要为工资，吃穿开销，，房租和日常的种种问题焦头烂额。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 或许任何一个冒险家…或提瓦特普通居民的烦恼，都比这台机器要大得多。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 它的可怜之处，也许只剩“一成不变的生活太过无聊”这一点了。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 这样一想，或许扛着这台“枫达专卖机”去旅游，是个不错的选择。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 一方面能让这台机器过上有趣的生活，一方面又能随时在旅途中为自己补充水分…
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 看它结实的外貌，将它当成武器投掷出去，说不定还能一下子打败敌人？
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 但仔细一想，打败敌人收获的摩拉，价值未必抵得上这台机器能够制作的，成百上千瓶枫达。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 所以将它当成武器投掷，未免太过浪费了。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 且不说离开洞天仙力的支持后，它能否再随时随地制作枫达…
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 在旅途中扛着它所增加的体力消耗，好像也不是几瓶枫达能补充的。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 想来想去，还是让这台机器安安静静地伫立在这里为妙。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+goto end
 
 :NPC.1.6
+echo “枫达专卖机”没有向你道别。或许它觉得，你迟早还会回来的。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+goto end
 
-@rem iexplore -e https://www.bilibili.com/video/BV1KH4y1f7yu
+@rem iexplore -e https://www.bilibili.com/video/BV1vj411b7eT
 :end
 echo =============END=============
 
