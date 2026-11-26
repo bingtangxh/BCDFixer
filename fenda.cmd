@@ -111,8 +111,9 @@ echo 那么机器没有故障的时候，也用力敲上两下，也许会得到某种惊喜？
 echo. & ping -n 4 127.0.0.1>nul 2>nul
 echo 因此，你以恰到好处的力道“殴打”了一番机器。
 echo. & ping -n 4 127.0.0.1>nul 2>nul
-echo 没想到，一瓶“经典·枫达”居然出现在了专卖机的出货口，似乎与正常使用时没什么区别…
+echo 没想到，一瓶“经典·枫达居然出现在了专卖机的出货口，似乎与正常使用时没什么区别…”
 echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo.
 echo ╔════════╤══════════════════╗
 echo ║  [1]   │   畅饮枫达！     ║
 echo ║  [2]   │   还是算了…      ║
@@ -124,9 +125,13 @@ if errorlevel 1 goto NPC.1.4.1
 
 :NPC.1.4.1
 cls
+echo 你一口喝完瓶中的枫达，确实感受到了枫达独有的甜味，还有短暂的满足感，但似乎有哪里不太对。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
 echo 与平时获得的枫达不同，这瓶“经典·枫达”中似乎有着满溢而出的气体，一股刺激感从喉咙直冲头顶。
 echo. & ping -n 4 127.0.0.1>nul 2>nul
 echo 明明享用了甜味的饮品，体验却像是喝下了绝云椒椒的冷榨果汁。
+echo. & ping -n 4 127.0.0.1>nul 2>nul
+echo 看来，之前的殴打的确起效了，只是这惊喜对于普通饮品的爱好者而言，尚且无法欣赏。
 echo. & ping -n 4 127.0.0.1>nul 2>nul
 echo 此时，你似乎想起了某间发条工坊的员工面对棘手的产品时发出的感慨——
 echo. & ping -n 4 127.0.0.1>nul 2>nul
@@ -176,7 +181,7 @@ echo “枫达专卖机”没有向你道别。或许它觉得，你迟早还会回来的。
 echo. & ping -n 4 127.0.0.1>nul 2>nul
 goto end
 
-@rem iexplore -e https://www.bilibili.com/video/BV1KH4y1f7yu
+@rem iexplore -e https://www.bilibili.com/video/BV1vj411b7eT
 :end
 echo =============END=============
 
