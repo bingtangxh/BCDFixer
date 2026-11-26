@@ -743,6 +743,15 @@ if /i "%co%"=="A" color 6f & echo color 6f>"%AppData%\9826\color.bat" & goto cha
 if /i "%co%"=="B" color 5f & echo color 5f>"%AppData%\9826\color.bat" & goto changeColor
 if /i "%co%"=="C" color df & echo color df>"%AppData%\9826\color.bat" & goto changeColor
 if "%co%"=="0" goto settingsMainMenu
+if "%co:~0,4%"=="3683" (
+    cls
+    echo Trigger EOTD
+    echo CMD:Set
+    echo EOTDFTR
+    echo in cihard.opt
+    echo.
+    pause>nul
+)
 echo.
 echo 你的输入有误，请重新输入。
 echo.
@@ -771,6 +780,48 @@ if "%windowsPath%"=="" (goto defineBCDStore1) else (
         goto newBCDStore
     )
 )
+
+
+rem System Cloch Error! Chech the RTC module.OUT OF MEMORY!Dropping...
+rem OCSS V2.0.1 Release (C) Orbit Tech 1989
+rem FAILED TO RECOVER. UNKNOWN ERROR.SEARCHING OTHER BACHUP...
+rem QUESTION 1:
+REM WHERE'S THE FRTS
+REM WE COME FOR DAISY.
+rem 为您带来死亡
+rem 为您带来不幸
+rem 为您带来绝望
+rem 我在看着你
+rem 通告
+rem 1995年6月11日在本台播放的“合成肉制品罐头”存在严重质量问题，极有可能导致严重后果。
+rem 请勿购买该产品。如已购买该产品，请立刻联系建安市危险物品处理中心。
+rem 您的生命永远排在第一位。
+rem 试验04
+rem 受试者5被碳化，已损失。
+rem 他在看着你。
+rem 看这里。
+rem 看。
+rem 各位市民请不要服用分发的药物此药物会导致您死亡这是您
+rem 收指示合理死亡的方法
+rem 专注热没有根除
+rem 不要接触
+rem 不要前往建安市第一人民医院！！！
+rem 这是最后的警告
+rem 他在我门外！！！
+rem 回放试验3，凌晨4:12:11处
+rem 摄像机观察到受试者背后有一人类骨骼状物体，径直走入受试者身体
+REM 至少1种结束您生命的方式。
+rem 为了大家。
+rem 您可以拥有最后的尊严。
+rem 他在看着你你无路可逃
+rem 你无法阻止红月的道路
+rem 血色的月亮将会升起
+rem THERE WILL BE NO LIFE
+rem WARP MOON FOREST ELEVATOR WATER TELEVISION DEATH
+rem 本○像○是安全的
+rem ○月升起
+rem 听到他的声音。
+rem 他将
 
 :defineFirmwareType
 cls
